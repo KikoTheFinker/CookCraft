@@ -2,8 +2,8 @@ package it.project.cookcraft.configs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.project.cookcraft.models.MeasurementsInserter;
-import it.project.cookcraft.models.ProductsInserter;
+import it.project.cookcraft.inserters.MeasurementsInserter;
+import it.project.cookcraft.inserters.ProductsInserter;
 import it.project.cookcraft.models.Recipe;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class DataInitializer {
                     int recipeId = jdbcTemplate.queryForObject("SELECT id FROM recipe WHERE recipe_name = ?", new Object[]{recipe.getName()}, Integer.class);
                     insertIngredientsAndMeasurements(productsInserter, measurementsInserter, recipeId);
                 }
-                Thread.sleep(6000);
+                Thread.sleep(1000);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

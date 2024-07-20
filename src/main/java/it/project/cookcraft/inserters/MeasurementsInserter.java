@@ -1,4 +1,4 @@
-package it.project.cookcraft.models;
+package it.project.cookcraft.inserters;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
