@@ -40,13 +40,13 @@ public class DataInitializer {
                     ProductsInserter productsInserter = mapper.treeToValue(mealNode, ProductsInserter.class);
                     MeasurementsInserter measurementsInserter = mapper.treeToValue(mealNode, MeasurementsInserter.class);
                     jdbcTemplate.update(
-                            "INSERT INTO recipe (recipe_name, decription, category, origin, meal_thumb, video_url) VALUES (?, ?, ?, ?, ?, ?)",
+                            "INSERT INTO recipe (recipe_name, description, category, origin, meal_thumb, video_url) VALUES (?, ?, ?, ?, ?, ?)",
                             recipe.getName(), recipe.getDescription(), recipe.getCategory(), recipe.getOrigin(), recipe.getMealThumb(), recipe.getVideoUrl()
                     );
                     int recipeId = jdbcTemplate.queryForObject("SELECT id FROM recipe WHERE recipe_name = ?", new Object[]{recipe.getName()}, Integer.class);
                     insertIngredientsAndMeasurements(productsInserter, measurementsInserter, recipeId);
                 }
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -77,7 +77,7 @@ public class DataInitializer {
             if (ingredients[i] != null && !ingredients[i].trim().isEmpty()) {
                 jdbcTemplate.update("INSERT INTO product (product_name) VALUES (?) ON CONFLICT (product_name) DO NOTHING", ingredients[i]);
                 int productId = jdbcTemplate.queryForObject("SELECT id FROM product WHERE product_name = ?", new Object[]{ingredients[i]}, Integer.class);
-                jdbcTemplate.update("INSERT INTO products_in_recipe (product_id, recipe_id, measure) VALUES (?, ?, ?) ON CONFLICT (product_id, recipe_id) DO NOTHING", productId, recipeId, measurements[i]);
+                jdbcTemplate.update("INSERT INTO products_in_recipe (product_id, recipe_id, measurement) VALUES (?, ?, ?) ON CONFLICT (product_id, recipe_id) DO NOTHING", productId, recipeId, measurements[i]);
             }
         }
     }

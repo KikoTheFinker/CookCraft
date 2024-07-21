@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 
-@Entity
+
 @Data
 @Table(name = "recipe")
 @NoArgsConstructor
@@ -44,7 +44,6 @@ public class Recipe {
     @Column(name = "video_url")
     private String videoUrl;
 
-    //TODO
-    /*@OneToMany(mappedBy = "recipe")
-    private List<ProductsInRecipe> products;*/
+    @OneToMany(mappedBy = "recipe")
+    private List<ProductsInRecipe> products;
 }

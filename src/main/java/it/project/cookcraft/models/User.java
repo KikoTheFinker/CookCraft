@@ -12,7 +12,6 @@ enum UserType {
     DeliveryPerson
 }
 
-@Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor

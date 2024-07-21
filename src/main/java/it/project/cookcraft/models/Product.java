@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
 @Table(name = "product")
 @Data
 @NoArgsConstructor
@@ -20,7 +19,6 @@ public class Product {
     @Column(name = "price")
     private double price;
 
-    //TODO
-    /*@OneToMany(mappedBy = "product")
-    private List<ProductsInRecipe> recipes;*/
+    @OneToMany(mappedBy = "product")
+    private List<ProductsInRecipe> recipes;
 }
