@@ -20,6 +20,6 @@ public class Order {
     private double price;
 
     @OneToOne(mappedBy = "userid")
-    User user;
+    private User user;
 
 }

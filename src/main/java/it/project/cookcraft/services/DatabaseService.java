@@ -13,7 +13,7 @@ public class DatabaseService {
     private JdbcTemplate jdbcTemplate;
 
     public List<Map<String, Object>> getAllData() {
-        String sql = "SELECT * FROM super_admin";
+        String sql = "SELECT * FROM recipe";
         return jdbcTemplate.queryForList(sql);
     }
 }

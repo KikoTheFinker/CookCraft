@@ -2,15 +2,21 @@ package it.project.cookcraft.models;
 
 
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@Table(name = "delivery_person")
 @Data
+@NoArgsConstructor
 //@PrimaryKeyJoinColumn(name = "user_id")
 public class DeliveryPerson extends User{
-    int distanceCovered;
-    boolean active;
+    private int distanceCovered;
+    private boolean active;
+
+    @OneToOne(mappedBy = "users")
+    private User user;
 
     @OneToOne(mappedBy = "order")
-    ProductOrder order;
+    private ProductOrder order;
 }
