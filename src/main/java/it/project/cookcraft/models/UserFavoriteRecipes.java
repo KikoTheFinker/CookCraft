@@ -1,20 +1,15 @@
 package it.project.cookcraft.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "user_favorite_recipes")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserFavoriteRecipes {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne(mappedBy = "user_id")
-    User user;
-
-    @OneToOne(mappedBy = "recipe_id")
-    Recipe recipe;
+    private User user;
+    private Recipe recipe;
 }

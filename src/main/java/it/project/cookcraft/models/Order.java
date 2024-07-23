@@ -1,25 +1,17 @@
 package it.project.cookcraft.models;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-@Table(name = "orders")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String address;
-
     private double distance;
-
     private double price;
-
-    @OneToOne(mappedBy = "userid")
     private User user;
 
 }

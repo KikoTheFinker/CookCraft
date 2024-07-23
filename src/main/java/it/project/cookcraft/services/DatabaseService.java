@@ -1,10 +1,12 @@
 package it.project.cookcraft.services;
 
+import it.project.cookcraft.dao.UserDAOimpl;
+import it.project.cookcraft.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DatabaseService {
@@ -12,8 +14,8 @@ public class DatabaseService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<Map<String, Object>> getAllData() {
-        String sql = "SELECT * FROM recipe";
-        return jdbcTemplate.queryForList(sql);
+    public List<User> getAllUsers() {
+        UserDAOimpl userDAO = new UserDAOimpl(jdbcTemplate);
+        return userDAO.getAll();
     }
 }
