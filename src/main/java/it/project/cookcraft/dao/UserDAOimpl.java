@@ -15,8 +15,8 @@ import java.util.Optional;
 @Repository
 public class UserDAOimpl implements UserDAO {
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+
 
     private static final class UserRowMapper implements RowMapper<User> {
 
@@ -40,7 +40,7 @@ public class UserDAOimpl implements UserDAO {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> findAll() {
         return jdbcTemplate.query("SELECT * FROM users", new UserRowMapper());
     }
 
