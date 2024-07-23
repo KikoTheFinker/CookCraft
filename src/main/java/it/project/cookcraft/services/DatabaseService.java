@@ -12,8 +12,8 @@ public class DatabaseService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<Map<String, Object>> getAllData() {
-        String sql = "SELECT * FROM recipe";
-        return jdbcTemplate.queryForList(sql);
+    public List<Map<String, Object>> getDataById(Long id) {
+        return jdbcTemplate.queryForList("SELECT * FROM recipe WHERE id = ?", id);
     }
+
 }

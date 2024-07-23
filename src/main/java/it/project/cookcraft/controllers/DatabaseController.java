@@ -16,6 +16,6 @@ public class DatabaseController {
 
     @GetMapping("/data")
     public List<Map<String, Object>> getData() {
-        return databaseService.getAllData();
+        return databaseService.getDataById(1L);
     }
 }
