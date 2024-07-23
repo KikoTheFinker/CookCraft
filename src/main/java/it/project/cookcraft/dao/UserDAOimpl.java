@@ -17,6 +17,10 @@ public class UserDAOimpl implements UserDAO {
 
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    public UserDAOimpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private static final class UserRowMapper implements RowMapper<User> {
 

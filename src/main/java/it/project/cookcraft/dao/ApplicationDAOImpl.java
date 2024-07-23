@@ -18,6 +18,10 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public ApplicationDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     private static final class ApplicationMapper implements RowMapper<Application> {
         @Override
         public Application mapRow(ResultSet rs, int rowNum) throws SQLException {

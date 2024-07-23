@@ -34,5 +34,4 @@ public class Recipe {
     @JsonProperty("strYoutube")
     private String videoUrl;
 
-    private List<ProductsInRecipe> products;
 }
