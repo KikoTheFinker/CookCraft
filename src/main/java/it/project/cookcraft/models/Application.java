@@ -11,5 +11,5 @@ public class Application {
     private Long id;
     private byte[] cv;
     private String motivationalLetter;
-    private User user;
+    private Long userId;
 }

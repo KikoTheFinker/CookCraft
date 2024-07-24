@@ -11,5 +11,5 @@ public class Review {
     private Long id;
     private double rating;
     private String review;
-    private User user;
+    private Long userId;
 }

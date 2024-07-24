@@ -1,5 +1,6 @@
-package it.project.cookcraft.dao;
+package it.project.cookcraft.dao.impls;
 
+import it.project.cookcraft.dao.interfaces.ProductDAO;
 import it.project.cookcraft.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

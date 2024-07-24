@@ -1,8 +1,8 @@
 package it.project.cookcraft.services;
 
-import it.project.cookcraft.dao.ProductsInRecipeDAOImpl;
-import it.project.cookcraft.dao.RecipeDAOImpl;
-import it.project.cookcraft.dao.UserDAOimpl;
+import it.project.cookcraft.dao.impls.ProductsInRecipeDAOImpl;
+import it.project.cookcraft.dao.impls.RecipeDAOImpl;
+import it.project.cookcraft.dao.impls.UserDAOimpl;
 import it.project.cookcraft.models.ProductsInRecipe;
 import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.models.User;

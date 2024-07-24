@@ -1,5 +1,6 @@
-package it.project.cookcraft.dao;
+package it.project.cookcraft.dao.impls;
 
+import it.project.cookcraft.dao.interfaces.ProductsInRecipeDAO;
 import it.project.cookcraft.models.ProductsInRecipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

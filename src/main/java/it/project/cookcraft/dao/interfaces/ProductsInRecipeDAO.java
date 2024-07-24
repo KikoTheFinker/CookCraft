@@ -1,4 +1,4 @@
-package it.project.cookcraft.dao;
+package it.project.cookcraft.dao.interfaces;
 
 import it.project.cookcraft.models.ProductsInRecipe;
 

@@ -1,5 +1,6 @@
-package it.project.cookcraft.dao;
+package it.project.cookcraft.dao.impls;
 
+import it.project.cookcraft.dao.interfaces.UserDAO;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.models.UserType;
 import org.springframework.beans.factory.annotation.Autowired;

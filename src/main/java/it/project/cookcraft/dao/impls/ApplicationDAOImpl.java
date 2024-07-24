@@ -1,5 +1,6 @@
-package it.project.cookcraft.dao;
+package it.project.cookcraft.dao.impls;
 
+import it.project.cookcraft.dao.interfaces.ApplicationDAO;
 import it.project.cookcraft.models.Application;
 import it.project.cookcraft.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
             User user = new User();
             user.setId(rs.getLong("user_id"));
-            application.setUser(user);
+            application.setUserId(user.getId());
 
             return application;
         }
@@ -52,13 +53,13 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     @Override
     public void save(Application application) {
         jdbcTemplate.update("INSERT INTO application (cv, motivational_letter, user_id) VALUES (?, ?, ?)",
-                application.getCv(), application.getMotivationalLetter(), application.getUser().getId());
+                application.getCv(), application.getMotivationalLetter(), application.getUserId());
     }
 
     @Override
     public void update(Application application) {
         jdbcTemplate.update("UPDATE application SET cv = ?, motivational_letter = ?, user_id = ? WHERE id = ?",
-                application.getCv(), application.getMotivationalLetter(), application.getUser().getId(), application.getId());
+                application.getCv(), application.getMotivationalLetter(), application.getUserId(), application.getId());
     }
 
     @Override
