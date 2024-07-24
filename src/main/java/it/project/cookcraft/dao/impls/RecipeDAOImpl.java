@@ -44,7 +44,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     }
 
     @Override
-    public Optional<Recipe> findById(int id) {
+    public Optional<Recipe> findById(Long id) {
         return jdbcTemplate.query("SELECT * FROM recipe WHERE id = ?", new Object[]{id}, new RecipeRowMapper()).stream().findFirst();
     }
 

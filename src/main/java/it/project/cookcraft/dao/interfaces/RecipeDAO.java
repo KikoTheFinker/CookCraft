@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface RecipeDAO {
     List<Recipe> findAll();
-    Optional<Recipe> findById(int id);
+    Optional<Recipe> findById(Long id);
     void save(Recipe recipe);
     void update(Recipe recipe);
     void delete(Recipe recipe);

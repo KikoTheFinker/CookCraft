@@ -20,7 +20,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Optional<Recipe> findRecipeById(int id) {
+    public Optional<Recipe> findRecipeById(Long id) {
         return recipeDAO.findById(id);
     }
 
