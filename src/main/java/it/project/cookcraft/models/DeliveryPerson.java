@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class DeliveryPerson extends User{
     private int distanceCovered;
     private boolean active;
-    private ProductOrder order;
+    private Long productOrderId;
 }

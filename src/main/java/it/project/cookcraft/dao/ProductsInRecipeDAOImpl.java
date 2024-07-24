@@ -28,7 +28,6 @@ public class ProductsInRecipeDAOImpl implements ProductsInRecipeDAO {
         public List<ProductsInRecipe> extractData(ResultSet rs) throws SQLException, DataAccessException {
             Map<Long, ProductsInRecipe> productsInRecipeMap = new HashMap<>();
 
-
             while (rs.next()){
                 Long recipeId = rs.getLong("recipe_id");
 

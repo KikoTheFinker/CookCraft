@@ -11,7 +11,7 @@ public class Order {
     private Long id;
     private String address;
     private double distance;
-    private double price;
-    private User user;
+    private int quantity;
+    private Long userId;
 
 }
