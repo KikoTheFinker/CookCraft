@@ -16,8 +16,8 @@ import java.util.Optional;
 @Repository
 public class ApplicationDAOImpl implements ApplicationDAO {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
 
     public ApplicationDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

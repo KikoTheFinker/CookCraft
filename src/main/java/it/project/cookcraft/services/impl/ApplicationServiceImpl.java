@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
 
-    @Autowired
-    private ApplicationDAO applicationDAO;
+
+    private final ApplicationDAO applicationDAO;
+
+    public ApplicationServiceImpl(ApplicationDAO applicationDAO) {
+        this.applicationDAO = applicationDAO;
+    }
 
     @Override
     public List<Application> findAllApplications() {

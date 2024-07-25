@@ -11,8 +11,12 @@ import java.util.Optional;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
-    @Autowired
-    private RecipeDAO recipeDAO;
+
+    private final RecipeDAO recipeDAO;
+
+    public RecipeServiceImpl(RecipeDAO recipeDAO) {
+        this.recipeDAO = recipeDAO;
+    }
 
     @Override
     public List<Recipe> findAllRecipes() {

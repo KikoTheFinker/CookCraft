@@ -14,9 +14,9 @@ import java.util.Optional;
 
 @Repository
 public class ProductDAOImpl implements ProductDAO {
-    JdbcTemplate jdbcTemplate;
 
-    @Autowired
+    private final JdbcTemplate jdbcTemplate;
+
     public ProductDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

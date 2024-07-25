@@ -15,9 +15,8 @@ import java.util.Optional;
 @Repository
 public class RecipeDAOImpl implements RecipeDAO {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public RecipeDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

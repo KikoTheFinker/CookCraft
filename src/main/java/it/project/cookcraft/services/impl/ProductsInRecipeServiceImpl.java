@@ -12,8 +12,12 @@ import java.util.Optional;
 @Service
 public class ProductsInRecipeServiceImpl implements ProductsInRecipeService {
 
-    @Autowired
-    private ProductsInRecipeDAO productsInRecipeDAO;
+
+    private final ProductsInRecipeDAO productsInRecipeDAO;
+
+    public ProductsInRecipeServiceImpl(ProductsInRecipeDAO productsInRecipeDAO) {
+        this.productsInRecipeDAO = productsInRecipeDAO;
+    }
 
     @Override
     public List<ProductsInRecipe> findAllProductsInRecipe() {

@@ -15,10 +15,8 @@ import java.util.*;
 @Repository
 public class ProductsInRecipeDAOImpl implements ProductsInRecipeDAO {
 
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-
-    @Autowired
     public ProductsInRecipeDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
