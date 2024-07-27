@@ -71,4 +71,9 @@ public class UserDAOimpl implements UserDAO {
     public void delete(User user) {
         jdbcTemplate.update("DELETE FROM users WHERE id = ?", user.getId());
     }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, new UserRowMapper()).stream().findFirst();
+    }
 }

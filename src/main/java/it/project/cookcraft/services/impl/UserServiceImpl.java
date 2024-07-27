@@ -12,7 +12,6 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-
     private final UserDAO userDAO;
 
     public UserServiceImpl(UserDAO userDAO) {
@@ -42,5 +41,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(User user) {
         userDAO.delete(user);
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return userDAO.findUserByEmail(email);
     }
 }
