@@ -6,8 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class LoginPageController {
 
@@ -20,13 +21,21 @@ public class LoginPageController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
         return userService.findUserByEmail(email)
                 .filter(user -> user.getPassword().equals(password))
                 .map(user -> {
                     String token = jwtUtil.generateToken(user.getEmail()); // Generate JWT
-                    return new ResponseEntity<>(token, HttpStatus.OK); // Return JWT
+                    Map<String, String> response = Map.of(
+                            "token", token,
+                            "user_name", user.getName(),
+                            "user_surname", user.getSurname()
+                    );
+                    return new ResponseEntity<>(response, HttpStatus.OK); // Return JWT and user details in a JSON response
                 })
-                .orElseGet(() -> new ResponseEntity<>("Invalid email or password", HttpStatus.OK));
+                .orElseGet(() -> new ResponseEntity<>(Map.of("error", "Invalid email or password"), HttpStatus.UNAUTHORIZED));
     }
 }

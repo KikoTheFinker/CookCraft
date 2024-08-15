@@ -56,9 +56,11 @@ public class UserDAOimpl implements UserDAO {
     @Override
     public void save(User user) {
         jdbcTemplate.update("INSERT INTO users (user_name, user_surname, email, address ,phone_number, password , user_type) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)", user.getName(), user.getSurname(), user.getEmail(), user.getAddress(),
+                        "VALUES (?, ?, ?, ?, ?, ?, ?::usertype)",
+                user.getName(), user.getSurname(), user.getEmail(), user.getAddress(),
                 user.getPhoneNumber(), user.getPassword(), user.getUserType().name());
     }
+
 
     @Override
     public void update(User user) {
