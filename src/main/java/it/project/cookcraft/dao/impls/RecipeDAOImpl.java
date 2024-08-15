@@ -2,11 +2,14 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.RecipeDAO;
 import it.project.cookcraft.models.Recipe;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -43,22 +46,47 @@ public class RecipeDAOImpl implements RecipeDAO {
     }
 
     @Override
+    public Page<Recipe> findAll(Pageable pageable) {
+        int totalRows = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM recipe", Integer.class);
+
+        List<Recipe> recipes = jdbcTemplate.query(
+                "SELECT * FROM recipe ORDER BY id ASC LIMIT ? OFFSET ?",
+                (PreparedStatement ps) -> {
+                    ps.setInt(1, pageable.getPageSize());
+                    ps.setInt(2, (int) pageable.getOffset());
+                },
+                new RecipeRowMapper()
+        );
+
+        return new PageImpl<>(recipes, pageable, totalRows);
+    }
+
+    @Override
     public Optional<Recipe> findById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM recipe WHERE id = ?", new Object[]{id}, new RecipeRowMapper()).stream().findFirst();
+        List<Recipe> recipes = jdbcTemplate.query(
+                "SELECT * FROM recipe WHERE id = ?",
+                ps -> ps.setLong(1, id),
+                new RecipeRowMapper()
+        );
+        return recipes.stream().findFirst();
     }
 
     @Override
     public void save(Recipe recipe) {
-        jdbcTemplate.update("INSERT INTO recipe (recipe_name, description, category, origin, meal_thumb, video_url)" +
-                        " VALUES (?, ?, ?, ?, ?, ?)", recipe.getName(), recipe.getDescription(), recipe.getCategory(),
-                recipe.getOrigin(), recipe.getMealThumb(), recipe.getVideoUrl());
+        jdbcTemplate.update(
+                "INSERT INTO recipe (recipe_name, description, category, origin, meal_thumb, video_url) VALUES (?, ?, ?, ?, ?, ?)",
+                recipe.getName(), recipe.getDescription(), recipe.getCategory(), recipe.getOrigin(),
+                recipe.getMealThumb(), recipe.getVideoUrl()
+        );
     }
 
     @Override
     public void update(Recipe recipe) {
-        jdbcTemplate.update("UPDATE recipe SET recipe_name = ?, description = ?, category = ?, origin = ?, meal_thumb = ? , video_url = ? " +
-                        "WHERE id = ?", recipe.getName(), recipe.getDescription(), recipe.getCategory(), recipe.getOrigin(),
-                recipe.getMealThumb(), recipe.getVideoUrl(), recipe.getId());
+        jdbcTemplate.update(
+                "UPDATE recipe SET recipe_name = ?, description = ?, category = ?, origin = ?, meal_thumb = ?, video_url = ? WHERE id = ?",
+                recipe.getName(), recipe.getDescription(), recipe.getCategory(), recipe.getOrigin(),
+                recipe.getMealThumb(), recipe.getVideoUrl(), recipe.getId()
+        );
     }
 
     @Override

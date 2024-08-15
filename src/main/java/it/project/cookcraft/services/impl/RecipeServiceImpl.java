@@ -3,7 +3,8 @@ package it.project.cookcraft.services.impl;
 import it.project.cookcraft.dao.interfaces.RecipeDAO;
 import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.services.interfaces.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,11 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public List<Recipe> findAllRecipes() {
         return recipeDAO.findAll();
+    }
+
+    @Override
+    public Page<Recipe> findAllRecipes(Pageable pageable) {
+        return recipeDAO.findAll(pageable);
     }
 
     @Override
