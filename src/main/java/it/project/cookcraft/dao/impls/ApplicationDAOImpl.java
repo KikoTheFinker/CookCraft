@@ -2,8 +2,6 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.ApplicationDAO;
 import it.project.cookcraft.models.Application;
-import it.project.cookcraft.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -18,7 +16,6 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
-
     public ApplicationDAOImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -30,10 +27,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
             application.setId(rs.getLong("id"));
             application.setCv(rs.getBytes("cv"));
             application.setMotivationalLetter(rs.getString("motivational_letter"));
-
-            User user = new User();
-            user.setId(rs.getLong("user_id"));
-            application.setUserId(user.getId());
+            application.setUserId(rs.getLong("user_id")); // Map the user_id
 
             return application;
         }
