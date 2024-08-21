@@ -14,6 +14,6 @@ public interface RecipeDAO {
     void save(Recipe recipe);
     void update(Recipe recipe);
     void delete(Recipe recipe);
-
-
+    Page<Recipe> findRecipesByNationality(String nationality, Pageable pageable);
+    Page<Recipe> findRecipesByCategory(String category, Pageable pageable);
 }

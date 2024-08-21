@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/apply")
+@RequestMapping("/api")
 public class ApplicationController {
 
     private final ApplicationService applicationService;
@@ -25,7 +25,7 @@ public class ApplicationController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping
+    @PostMapping("/apply")
     public ResponseEntity<String> createApplication(@RequestBody Map<String, Object> applicationData, @RequestHeader("Authorization") String tokenHeader) {
         try {
             String token = tokenHeader.substring(7);

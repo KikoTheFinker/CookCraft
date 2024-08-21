@@ -48,4 +48,14 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteRecipe(Recipe recipe) {
         recipeDAO.delete(recipe);
     }
+
+    @Override
+    public Page<Recipe> findRecipesByNationality(String nationality, Pageable pageable) {
+        return recipeDAO.findRecipesByNationality(nationality, pageable);
+    }
+
+    @Override
+    public Page<Recipe> findRecipesByCategory(String category, Pageable pageable) {
+        return recipeDAO.findRecipesByCategory(category, pageable);
+    }
 }

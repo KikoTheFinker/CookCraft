@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
 
 @RestController
 @RequestMapping("/api")
@@ -24,10 +25,21 @@ public class RecipeController {
     @GetMapping("/recipes")
     public ResponseEntity<Page<Recipe>> getRecipes(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String nationality
+    ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Recipe> recipes = recipeService.findAllRecipes(pageable);
+        Page<Recipe> recipes;
+
+        if (StringUtils.hasText(nationality)) {
+            recipes = recipeService.findRecipesByNationality(nationality, pageable);
+        } else if (StringUtils.hasText(category)) {
+            recipes = recipeService.findRecipesByCategory(category, pageable);
+        } else {
+            recipes = recipeService.findAllRecipes(pageable);
+        }
+
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 }

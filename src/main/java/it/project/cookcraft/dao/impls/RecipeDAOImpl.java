@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +46,9 @@ public class RecipeDAOImpl implements RecipeDAO {
 
     @Override
     public Page<Recipe> findAll(Pageable pageable) {
-        int totalRows = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM recipe", Integer.class);
+        Integer totalRows = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM recipe", Integer.class);
+
+        int totalRowsCount = (totalRows != null) ? totalRows : 0;
 
         List<Recipe> recipes = jdbcTemplate.query(
                 "SELECT * FROM recipe ORDER BY id ASC LIMIT ? OFFSET ?",
@@ -58,7 +59,7 @@ public class RecipeDAOImpl implements RecipeDAO {
                 new RecipeRowMapper()
         );
 
-        return new PageImpl<>(recipes, pageable, totalRows);
+        return new PageImpl<>(recipes, pageable, totalRowsCount);
     }
 
     @Override
@@ -93,4 +94,52 @@ public class RecipeDAOImpl implements RecipeDAO {
     public void delete(Recipe recipe) {
         jdbcTemplate.update("DELETE FROM recipe WHERE id = ?", recipe.getId());
     }
+
+    @Override
+    public Page<Recipe> findRecipesByNationality(String nationality, Pageable pageable) {
+        Integer totalRows = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM recipe WHERE origin = ?",
+                new Object[]{nationality},
+                Integer.class
+        );
+
+        int totalRowsCount = (totalRows != null) ? totalRows : 0;
+
+        List<Recipe> recipes = jdbcTemplate.query(
+                "SELECT * FROM recipe WHERE origin = ? ORDER BY id ASC LIMIT ? OFFSET ?",
+                ps -> {
+                    ps.setString(1, nationality);
+                    ps.setInt(2, pageable.getPageSize());
+                    ps.setInt(3, (int) pageable.getOffset());
+                },
+                new RecipeRowMapper()
+        );
+
+        return new PageImpl<>(recipes, pageable, totalRowsCount);
+    }
+
+
+    @Override
+    public Page<Recipe> findRecipesByCategory(String category, Pageable pageable) {
+        Integer totalRows = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM recipe WHERE category = ?",
+                new Object[]{category},
+                Integer.class
+        );
+        int totalRowsCount = (totalRows != null) ? totalRows : 0;
+
+        List<Recipe> recipes = jdbcTemplate.query(
+                "SELECT * FROM recipe WHERE category = ? ORDER BY id ASC LIMIT ? OFFSET ?",
+                ps -> {
+                    ps.setString(1, category);
+                    ps.setInt(2, pageable.getPageSize());
+                    ps.setInt(3, (int) pageable.getOffset());
+                },
+                new RecipeRowMapper()
+        );
+
+        return new PageImpl<>(recipes, pageable, totalRowsCount);
+    }
+
+
 }

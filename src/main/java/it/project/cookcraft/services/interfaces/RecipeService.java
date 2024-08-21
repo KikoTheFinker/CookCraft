@@ -14,5 +14,6 @@ public interface RecipeService {
     void saveRecipe(Recipe recipe);
     void updateRecipe(Recipe recipe);
     void deleteRecipe(Recipe recipe);
-
+    Page<Recipe> findRecipesByNationality(String nationality, Pageable pageable);
+    Page<Recipe> findRecipesByCategory(String category, Pageable pageable);
 }
