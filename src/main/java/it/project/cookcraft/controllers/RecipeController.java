@@ -32,7 +32,11 @@ public class RecipeController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Recipe> recipes;
 
-        if (StringUtils.hasText(nationality)) {
+        if (StringUtils.hasText(nationality) && StringUtils.hasText(category))
+        {
+            recipes = recipeService.findRecipesByNationalityAndCategory(nationality, category, pageable);
+        }
+        else if (StringUtils.hasText(nationality)) {
             recipes = recipeService.findRecipesByNationality(nationality, pageable);
         } else if (StringUtils.hasText(category)) {
             recipes = recipeService.findRecipesByCategory(category, pageable);

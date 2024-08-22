@@ -58,4 +58,9 @@ public class RecipeServiceImpl implements RecipeService {
     public Page<Recipe> findRecipesByCategory(String category, Pageable pageable) {
         return recipeDAO.findRecipesByCategory(category, pageable);
     }
+
+    @Override
+    public Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable) {
+        return recipeDAO.findRecipesByNationalityAndCategory(nationality, category, pageable);
+    }
 }

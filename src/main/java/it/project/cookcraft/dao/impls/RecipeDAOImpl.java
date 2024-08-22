@@ -141,5 +141,29 @@ public class RecipeDAOImpl implements RecipeDAO {
         return new PageImpl<>(recipes, pageable, totalRowsCount);
     }
 
+    @Override
+    public Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable) {
+        Integer totalRows = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM recipe WHERE category = ? AND origin = ?",
+                new Object[]{category, nationality},
+                Integer.class
+        );
+
+        int totalRowsCount = (totalRows != null) ? totalRows : 0;
+
+        List<Recipe> recipes = jdbcTemplate.query(
+                "SELECT * FROM recipe WHERE category = ? AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?",
+                ps -> {
+                    ps.setString(1, category);
+                    ps.setString(2, nationality);
+                    ps.setInt(3, pageable.getPageSize());
+                    ps.setInt(4, (int) pageable.getOffset());
+                },
+                new RecipeRowMapper()
+        );
+
+        return new PageImpl<>(recipes, pageable, totalRowsCount);
+    }
+
 
 }
