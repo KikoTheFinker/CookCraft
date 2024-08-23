@@ -121,43 +121,95 @@ public class RecipeDAOImpl implements RecipeDAO {
 
     @Override
     public Page<Recipe> findRecipesByCategory(String category, Pageable pageable) {
-        Integer totalRows = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM recipe WHERE category = ?",
-                new Object[]{category},
-                Integer.class
-        );
+        String sql;
+        String countSql;
+
+        switch (category.toLowerCase()) {
+            case "breakfast":
+                sql = "SELECT * FROM recipe WHERE category = 'Breakfast' ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category = 'Breakfast'";
+                break;
+            case "lunch":
+                sql = "SELECT * FROM recipe WHERE category IN ('Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Side') ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category IN ('Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Side')";
+                break;
+            case "dinner":
+                sql = "SELECT * FROM recipe WHERE category IN ('Beef', 'Lamb', 'Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Goat', 'Side') ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category IN ('Beef', 'Lamb', 'Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Goat', 'Side')";
+                break;
+            case "dessert":
+                sql = "SELECT * FROM recipe WHERE category = 'Dessert' ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category = 'Dessert'";
+                break;
+            case "vegetarian":
+                sql = "SELECT * FROM recipe WHERE category = 'Vegetarian' ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category = 'Vegetarian'";
+                break;
+            case "pescatarian":
+                sql = "SELECT * FROM recipe WHERE category IN ('Seafood', 'Vegetarian', 'Vegan', 'Side') ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category IN ('Seafood', 'Vegetarian', 'Vegan', 'Side')";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid meal type: " + category);
+        }
+
+        Integer totalRows = jdbcTemplate.queryForObject(countSql, Integer.class);
         int totalRowsCount = (totalRows != null) ? totalRows : 0;
 
         List<Recipe> recipes = jdbcTemplate.query(
-                "SELECT * FROM recipe WHERE category = ? ORDER BY id ASC LIMIT ? OFFSET ?",
+                sql,
                 ps -> {
-                    ps.setString(1, category);
-                    ps.setInt(2, pageable.getPageSize());
-                    ps.setInt(3, (int) pageable.getOffset());
+                    ps.setInt(1, pageable.getPageSize());
+                    ps.setInt(2, (int) pageable.getOffset());
                 },
                 new RecipeRowMapper()
         );
 
         return new PageImpl<>(recipes, pageable, totalRowsCount);
     }
-
     @Override
     public Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable) {
-        Integer totalRows = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM recipe WHERE category = ? AND origin = ?",
-                new Object[]{category, nationality},
-                Integer.class
-        );
+        String sql;
+        String countSql;
 
+        switch (category.toLowerCase()) {
+            case "breakfast":
+                sql = "SELECT * FROM recipe WHERE category = 'Breakfast' AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category = 'Breakfast' AND origin = ?";
+                break;
+            case "lunch":
+                sql = "SELECT * FROM recipe WHERE category IN ('Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Side') AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category IN ('Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Side') AND origin = ?";
+                break;
+            case "dinner":
+                sql = "SELECT * FROM recipe WHERE category IN ('Beef', 'Lamb', 'Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Goat', 'Side') AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category IN ('Beef', 'Lamb', 'Chicken', 'Vegetarian', 'Vegan', 'Pasta', 'Seafood', 'Pork', 'Goat', 'Side') AND origin = ?";
+                break;
+            case "dessert":
+                sql = "SELECT * FROM recipe WHERE category = 'Dessert' AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category = 'Dessert' AND origin = ?";
+                break;
+            case "vegetarian":
+                sql = "SELECT * FROM recipe WHERE category = 'Vegetarian' AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category = 'Vegetarian' AND origin = ?";
+                break;
+            case "pescatarian":
+                sql = "SELECT * FROM recipe WHERE category IN ('Seafood', 'Vegetarian', 'Vegan', 'Pasta', 'Side') AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?";
+                countSql = "SELECT COUNT(*) FROM recipe WHERE category IN ('Seafood', 'Vegetarian', 'Vegan', 'Pasta', 'Side') AND origin = ?";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid meal type: " + category);
+        }
+
+        Integer totalRows = jdbcTemplate.queryForObject(countSql, Integer.class, nationality);
         int totalRowsCount = (totalRows != null) ? totalRows : 0;
 
         List<Recipe> recipes = jdbcTemplate.query(
-                "SELECT * FROM recipe WHERE category = ? AND origin = ? ORDER BY id ASC LIMIT ? OFFSET ?",
+                sql,
                 ps -> {
-                    ps.setString(1, category);
-                    ps.setString(2, nationality);
-                    ps.setInt(3, pageable.getPageSize());
-                    ps.setInt(4, (int) pageable.getOffset());
+                    ps.setString(1, nationality);
+                    ps.setInt(2, pageable.getPageSize());
+                    ps.setInt(3, (int) pageable.getOffset());
                 },
                 new RecipeRowMapper()
         );
