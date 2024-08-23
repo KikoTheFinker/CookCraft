@@ -1,5 +1,8 @@
 package it.project.cookcraft.controllers;
 
+import it.project.cookcraft.dto.ProductDTO;
+import it.project.cookcraft.dto.RecipeWithProductsDTO;
+import it.project.cookcraft.models.ProductsInRecipe;
 import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.services.interfaces.RecipeService;
 import org.springframework.data.domain.Page;
@@ -10,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.util.StringUtils;
 
-import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -48,14 +51,20 @@ public class RecipeController {
     }
 
     @GetMapping("/recipes/{id}")
-    public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
+    public ResponseEntity<RecipeWithProductsDTO> getRecipe(@PathVariable Long id) {
+        RecipeWithProductsDTO recipeWithProductsDTO = new RecipeWithProductsDTO();
         Optional<Recipe> recipe = recipeService.findRecipeById(id);
 
         if(recipe.isPresent())
         {
-            return new ResponseEntity<>(recipe.get(), HttpStatus.OK);
+            List<ProductDTO> productList = recipeService.findProductsByRecipeId(id);
+            recipeWithProductsDTO.setRecipe(recipe.get());
+            recipeWithProductsDTO.setProductsInRecipes(productList);
+            return new ResponseEntity<>(recipeWithProductsDTO, HttpStatus.OK);
         }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+        else
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

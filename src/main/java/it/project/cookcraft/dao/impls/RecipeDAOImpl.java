@@ -1,6 +1,7 @@
 package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.RecipeDAO;
+import it.project.cookcraft.dto.ProductDTO;
 import it.project.cookcraft.models.Recipe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,6 +165,28 @@ public class RecipeDAOImpl implements RecipeDAO {
         );
 
         return new PageImpl<>(recipes, pageable, totalRowsCount);
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByRecipeId(Long recipeId) {
+        String sqlQuery = "SELECT pir.product_id, p.product_name, p.price, pir.measurement " +
+        "FROM products_in_recipe pir " +
+        "JOIN product p ON pir.product_id = p.id " +
+        "WHERE pir.recipe_id = ?";
+
+        List<ProductDTO> products = new ArrayList<>();
+        jdbcTemplate.query(sqlQuery, new Object[]{recipeId}, (rs, rowNum) -> {
+            ProductDTO product = new ProductDTO();
+            product.setId(rs.getLong("product_id"));
+            product.setName(rs.getString("product_name"));
+            product.setPrice(rs.getDouble("price"));
+            product.setMeasurement(rs.getString("measurement"));
+
+            products.add(product);
+            return product;
+        });
+
+        return products;
     }
 
 

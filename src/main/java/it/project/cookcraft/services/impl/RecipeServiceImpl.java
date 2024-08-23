@@ -1,6 +1,7 @@
 package it.project.cookcraft.services.impl;
 
 import it.project.cookcraft.dao.interfaces.RecipeDAO;
+import it.project.cookcraft.dto.ProductDTO;
 import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.services.interfaces.RecipeService;
 import org.springframework.data.domain.Page;
@@ -62,5 +63,10 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable) {
         return recipeDAO.findRecipesByNationalityAndCategory(nationality, category, pageable);
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByRecipeId(Long recipeId) {
+        return recipeDAO.findProductsByRecipeId(recipeId);
     }
 }
