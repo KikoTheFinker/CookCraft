@@ -51,11 +51,7 @@ public class RecipeController {
     public ResponseEntity<Recipe> getRecipe(@PathVariable Long id) {
         Optional<Recipe> recipe = recipeService.findRecipeById(id);
 
-        if(recipe.isPresent())
-        {
-            return new ResponseEntity<>(recipe.get(), HttpStatus.OK);
-        }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return recipe.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
 }
