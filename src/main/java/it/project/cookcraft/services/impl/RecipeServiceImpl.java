@@ -21,11 +21,6 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<Recipe> findAllRecipes() {
-        return recipeDAO.findAll();
-    }
-
-    @Override
     public Page<Recipe> findAllRecipes(Pageable pageable) {
         return recipeDAO.findAll(pageable);
     }

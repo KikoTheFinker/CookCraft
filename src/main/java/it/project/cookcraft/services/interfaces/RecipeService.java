@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RecipeService {
-    List<Recipe> findAllRecipes();
     Page<Recipe> findAllRecipes(Pageable pageable);
     Optional<Recipe> findRecipeById(Long id);
     void saveRecipe(Recipe recipe);
