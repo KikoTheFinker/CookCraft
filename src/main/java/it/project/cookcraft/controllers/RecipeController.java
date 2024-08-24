@@ -54,7 +54,6 @@ public class RecipeController {
     public ResponseEntity<RecipeWithProductsDTO> getRecipe(@PathVariable Long id) {
         RecipeWithProductsDTO recipeWithProductsDTO = new RecipeWithProductsDTO();
         Optional<Recipe> recipe = recipeService.findRecipeById(id);
-
         if(recipe.isPresent())
         {
             List<ProductDTO> productList = recipeService.findProductsByRecipeId(id);
