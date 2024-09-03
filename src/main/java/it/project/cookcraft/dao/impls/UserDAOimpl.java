@@ -1,6 +1,7 @@
 package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.UserDAO;
+import it.project.cookcraft.dto.UserDTO;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.models.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,10 +64,9 @@ public class UserDAOimpl implements UserDAO {
 
 
     @Override
-    public void update(User user) {
-        jdbcTemplate.update("UPDATE users SET user_name = ?, user_surname = ?, email = ?, address = ?, phone_number = ?, password = ?, " +
-                        "user_type = ? WHERE id = ?", user.getName(), user.getSurname(), user.getEmail(), user.getAddress(), user.getPhoneNumber(),
-                user.getPassword(), user.getUserType().name(), user.getId());
+    public void update(UserDTO user) {
+        jdbcTemplate.update("UPDATE users SET user_name = ?, user_surname = ?, email = ?, address = ?, phone_number = ? " +
+                " WHERE email = ?", user.getUserName(), user.getUserSurname(), user.getEmail(), user.getAddress(), user.getPhoneNumber(), user.getEmail());
     }
 
     @Override

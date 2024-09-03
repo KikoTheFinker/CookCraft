@@ -35,6 +35,9 @@ public class LoginPageController {
                     response.put("user_name", user.getName());
                     response.put("user_surname", user.getSurname());
                     response.put("email", user.getEmail());
+                    if(user.getAddress() != null) {
+                        response.put("address", user.getAddress());
+                    }
                     if (user.getPhoneNumber() != null) {
                         response.put("phone_number", user.getPhoneNumber());
                     }

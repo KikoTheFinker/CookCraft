@@ -1,13 +1,11 @@
-package it.project.cookcraft.configs;
+package it.project.cookcraft.controllers;
 
+import it.project.cookcraft.dto.UserDTO;
 import it.project.cookcraft.security.JwtUtil;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -34,5 +32,13 @@ public class UserProfileController {
                     return new ResponseEntity<>(profile, HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("/profile/update")
+    public ResponseEntity<Map<String, String>> updateUserProfile(
+            @RequestHeader("Authorization") String token,
+            @RequestBody UserDTO userDTO) {
+        userService.updateUser(userDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
