@@ -1,6 +1,7 @@
 package it.project.cookcraft.services.impl;
 
 import it.project.cookcraft.dao.interfaces.UserDAO;
+import it.project.cookcraft.dto.UserDTO;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user) {userDAO.save(user);}
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(UserDTO user) {
         userDAO.update(user);
     }
 
