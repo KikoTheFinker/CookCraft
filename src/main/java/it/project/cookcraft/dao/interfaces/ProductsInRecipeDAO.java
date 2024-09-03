@@ -11,5 +11,4 @@ public interface ProductsInRecipeDAO {
     void save(ProductsInRecipe productsInRecipe);
     void update(ProductsInRecipe productsInRecipe);
     void delete(ProductsInRecipe productsInRecipe);
-
 }

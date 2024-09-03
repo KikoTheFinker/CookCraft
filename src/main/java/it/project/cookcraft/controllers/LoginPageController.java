@@ -29,7 +29,7 @@ public class LoginPageController {
         return userService.findUserByEmail(email)
                 .filter(user -> user.getPassword().equals(password))
                 .map(user -> {
-                    String token = jwtUtil.generateToken(user.getEmail()); // Generate JWT
+                    String token = jwtUtil.generateToken(user.getEmail());
                     Map<String, String> response = new HashMap<>();
                     response.put("token", token);
                     response.put("user_name", user.getName());

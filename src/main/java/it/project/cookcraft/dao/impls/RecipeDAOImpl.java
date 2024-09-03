@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class RecipeDAOImpl implements RecipeDAO {
@@ -221,13 +222,11 @@ public class RecipeDAOImpl implements RecipeDAO {
 
     @Override
     public List<ProductDTO> findProductsByRecipeId(Long recipeId) {
-        String sqlQuery = "SELECT pir.product_id, p.product_name, p.price, pir.measurement " +
+        List<ProductDTO> products = new ArrayList<>();
+        jdbcTemplate.query("SELECT pir.product_id, p.product_name, p.price, pir.measurement " +
                 "FROM products_in_recipe pir " +
                 "JOIN product p ON pir.product_id = p.id " +
-                "WHERE pir.recipe_id = ?";
-
-        List<ProductDTO> products = new ArrayList<>();
-        jdbcTemplate.query(sqlQuery, new Object[]{recipeId}, (rs, rowNum) -> {
+                "WHERE pir.recipe_id = ?", new Object[]{recipeId}, (rs, rowNum) -> {
             ProductDTO product = new ProductDTO();
             product.setId(rs.getLong("product_id"));
             product.setName(rs.getString("product_name"));
@@ -240,7 +239,39 @@ public class RecipeDAOImpl implements RecipeDAO {
 
         return products;
     }
+    @Override
+    public Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT r.* FROM recipe r");
+        List<String> conditions = new ArrayList<>();
+        List<Object> params = new ArrayList<>();
+        if (productIds != null && !productIds.isEmpty()) {
+            sqlBuilder.append(" JOIN products_in_recipe pir ON r.id = pir.recipe_id");
+            conditions.add("pir.product_id IN (" + productIds.stream().map(id -> "?").collect(Collectors.joining(", ")) + ")");
+            params.addAll(productIds);
+        }
+        if (nationality != null && !nationality.isEmpty()) {
+            conditions.add("r.origin = ?");
+            params.add(nationality);
+        }
+        if (category != null && !category.isEmpty()) {
+            conditions.add("r.category = ?");
+            params.add(category);
+        }
+        if (!conditions.isEmpty()) {
+            sqlBuilder.append(" WHERE ").append(String.join(" AND ", conditions));
+        }
 
+        sqlBuilder.append(" ORDER BY r.id ASC LIMIT ? OFFSET ?");
 
+        params.add(pageable.getPageSize());
+        params.add((int) pageable.getOffset());
 
+        String countSql = "SELECT COUNT(*) FROM (" + sqlBuilder + ") AS countQuery";
+        Integer totalRows = jdbcTemplate.queryForObject(countSql, params.toArray(), Integer.class);
+        int totalRowsCount = (totalRows != null) ? totalRows : 0;
+
+        List<Recipe> recipes = jdbcTemplate.query(sqlBuilder.toString(), params.toArray(), new RecipeRowMapper());
+
+        return new PageImpl<>(recipes, pageable, totalRowsCount);
+    }
 }

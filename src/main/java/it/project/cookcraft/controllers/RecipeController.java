@@ -2,7 +2,6 @@ package it.project.cookcraft.controllers;
 
 import it.project.cookcraft.dto.ProductDTO;
 import it.project.cookcraft.dto.RecipeWithProductsDTO;
-import it.project.cookcraft.models.ProductsInRecipe;
 import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.services.interfaces.RecipeService;
 import org.springframework.data.domain.Page;
@@ -10,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;

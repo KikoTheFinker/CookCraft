@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class ProductsInRecipeDAOImpl implements ProductsInRecipeDAO {
@@ -65,7 +66,6 @@ public class ProductsInRecipeDAOImpl implements ProductsInRecipeDAO {
                     productsInRecipe.getRecipeId(), productsInRecipe.getProductIds().get(i), productsInRecipe.getMeasurement().get(i));
         }
     }
-
     @Override
     public void update(ProductsInRecipe productsInRecipe) {
         jdbcTemplate.update("DELETE FROM products_in_recipe WHERE recipe_id = ?", productsInRecipe.getRecipeId());

@@ -19,4 +19,5 @@ public interface RecipeDAO {
     Page<Recipe> findRecipesByCategory(String category, Pageable pageable);
     Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable);
     List<ProductDTO> findProductsByRecipeId(Long recipeId);
+    Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable);
 }

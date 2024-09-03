@@ -64,4 +64,9 @@ public class RecipeServiceImpl implements RecipeService {
     public List<ProductDTO> findProductsByRecipeId(Long recipeId) {
         return recipeDAO.findProductsByRecipeId(recipeId);
     }
+
+    @Override
+    public Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable) {
+        return recipeDAO.findRecipesByFilters(nationality, category, productIds, pageable);
+    }
 }
