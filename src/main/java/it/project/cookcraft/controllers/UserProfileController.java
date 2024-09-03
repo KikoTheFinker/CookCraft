@@ -39,6 +39,7 @@ public class UserProfileController {
             @RequestHeader("Authorization") String token,
             @RequestBody UserDTO userDTO) {
         userService.updateUser(userDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Map<String, String> response = Map.of("message", "Profile updated successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
