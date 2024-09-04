@@ -13,4 +13,5 @@ public interface UserDAO {
     void update(UserDTO user);
     void delete(User user);
     Optional<User> findUserByEmail(String email);
+    void addRecipeToFavoritesById(Long id, Long recipeId);
 }

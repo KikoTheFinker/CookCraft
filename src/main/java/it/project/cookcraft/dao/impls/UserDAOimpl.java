@@ -78,4 +78,10 @@ public class UserDAOimpl implements UserDAO {
     public Optional<User> findUserByEmail(String email) {
         return jdbcTemplate.query("SELECT * FROM users WHERE email = ?", new Object[]{email}, new UserRowMapper()).stream().findFirst();
     }
+
+    @Override
+    public void addRecipeToFavoritesById(Long id, Long recipeId) {
+        jdbcTemplate.update("INSERT INTO user_favorite_recipes(user_id, recipe_id)" +
+                "VALUES (?, ?)", id, recipeId);
+    }
 }
