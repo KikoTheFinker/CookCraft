@@ -16,5 +16,5 @@ public interface RecipeDAO {
     void update(Recipe recipe);
     void delete(Recipe recipe);
     List<ProductDTO> findProductsByRecipeId(Long recipeId);
-    Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable);
+    Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, String searchTerm, Pageable pageable);
 }

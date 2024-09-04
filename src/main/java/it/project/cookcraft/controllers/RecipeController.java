@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,10 +29,11 @@ public class RecipeController {
             @RequestParam(defaultValue = "9") int size,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String nationality,
-            @RequestParam(required = false) List<Long> productId
+            @RequestParam(required = false) List<Long> productId,
+            @RequestParam(required = false) String searchTerm
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Recipe> recipes = recipeService.findRecipesByFilters(nationality, category, productId, pageable);
+        Page<Recipe> recipes = recipeService.findRecipesByFilters(nationality, category, productId, searchTerm, pageable);
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 

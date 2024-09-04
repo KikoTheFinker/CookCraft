@@ -4,7 +4,6 @@ import it.project.cookcraft.dao.interfaces.UserDAO;
 import it.project.cookcraft.dto.UserDTO;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.services.interfaces.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

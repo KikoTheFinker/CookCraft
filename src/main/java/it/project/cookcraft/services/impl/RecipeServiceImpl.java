@@ -52,7 +52,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable) {
-        return recipeDAO.findRecipesByFilters(nationality, category, productIds, pageable);
+    public Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, String searchTerm, Pageable pageable) {
+        return recipeDAO.findRecipesByFilters(nationality, category, productIds, searchTerm, pageable);
     }
 }

@@ -119,7 +119,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         return products;
     }
     @Override
-    public Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable) {
+    public Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, String searchTerm, Pageable pageable) {
         StringBuilder sqlBuilder = new StringBuilder("SELECT DISTINCT r.* FROM recipe r");
         List<String> conditions = new ArrayList<>();
         List<Object> params = new ArrayList<>();
@@ -130,10 +130,12 @@ public class RecipeDAOImpl implements RecipeDAO {
             params.addAll(productIds);
         }
 
+
         if (nationality != null && !nationality.isEmpty()) {
             conditions.add("r.origin = ?");
             params.add(nationality);
         }
+
 
         if (category != null && !category.isEmpty()) {
             switch (category.toLowerCase()) {
@@ -158,6 +160,12 @@ public class RecipeDAOImpl implements RecipeDAO {
                 default:
                     throw new IllegalArgumentException("Invalid meal type: " + category);
             }
+        }
+
+
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            conditions.add("LOWER(r.recipe_name) LIKE LOWER(?)");
+            params.add("%" + searchTerm + "%");
         }
 
         if (!conditions.isEmpty()) {
