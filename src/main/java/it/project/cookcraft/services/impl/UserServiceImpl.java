@@ -46,4 +46,9 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findUserByEmail(String email) {
         return userDAO.findUserByEmail(email);
     }
+
+    @Override
+    public void addRecipeToFavoritesById(Long id, Long recipeId) {
+        userDAO.addRecipeToFavoritesById(id, recipeId);
+    }
 }

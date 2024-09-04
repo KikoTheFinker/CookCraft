@@ -13,4 +13,5 @@ public interface UserService {
     void updateUser(UserDTO user);
     void deleteUser(User user);
     Optional<User> findUserByEmail(String email);
+    void addRecipeToFavoritesById(Long id, Long recipeId);
 }
