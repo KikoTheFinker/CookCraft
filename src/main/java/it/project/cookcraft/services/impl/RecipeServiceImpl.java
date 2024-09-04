@@ -45,20 +45,6 @@ public class RecipeServiceImpl implements RecipeService {
         recipeDAO.delete(recipe);
     }
 
-    @Override
-    public Page<Recipe> findRecipesByNationality(String nationality, Pageable pageable) {
-        return recipeDAO.findRecipesByNationality(nationality, pageable);
-    }
-
-    @Override
-    public Page<Recipe> findRecipesByCategory(String category, Pageable pageable) {
-        return recipeDAO.findRecipesByCategory(category, pageable);
-    }
-
-    @Override
-    public Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable) {
-        return recipeDAO.findRecipesByNationalityAndCategory(nationality, category, pageable);
-    }
 
     @Override
     public List<ProductDTO> findProductsByRecipeId(Long recipeId) {

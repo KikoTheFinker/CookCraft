@@ -16,11 +16,9 @@ import java.util.List;
 public class ProductsController {
 
     private final ProductService productService;
-    private final RecipeService recipeService;
 
-    public ProductsController(ProductService productService, RecipeService recipeService) {
+    public ProductsController(ProductService productService) {
         this.productService = productService;
-        this.recipeService = recipeService;
     }
 
     @GetMapping("/products")
@@ -28,16 +26,4 @@ public class ProductsController {
         List<Product> products = productService.findAllProducts();
         return ResponseEntity.ok(products);
     }
-
-    @PostMapping("/filter")
-    public ResponseEntity<List<Recipe>> searchRecipesByFilters(
-            @RequestParam(required = false) String nationality,
-            @RequestParam(required = false) String category,
-            @RequestBody(required = false) List<Long> productIds,
-            Pageable pageable
-    ) {
-        Page<Recipe> recipesPage = recipeService.findRecipesByFilters(nationality, category, productIds, pageable);
-        return ResponseEntity.ok(recipesPage.getContent());
-    }
-
 }

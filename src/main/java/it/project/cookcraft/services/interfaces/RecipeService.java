@@ -14,9 +14,6 @@ public interface RecipeService {
     void saveRecipe(Recipe recipe);
     void updateRecipe(Recipe recipe);
     void deleteRecipe(Recipe recipe);
-    Page<Recipe> findRecipesByNationality(String nationality, Pageable pageable);
-    Page<Recipe> findRecipesByCategory(String category, Pageable pageable);
-    Page<Recipe> findRecipesByNationalityAndCategory(String nationality, String category, Pageable pageable);
     List<ProductDTO> findProductsByRecipeId(Long id);
     Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, Pageable pageable);
 }

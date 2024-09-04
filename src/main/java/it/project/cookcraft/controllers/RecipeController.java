@@ -9,10 +9,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -27,27 +28,17 @@ public class RecipeController {
     @GetMapping("/recipes")
     public ResponseEntity<Page<Recipe>> getRecipes(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "9") int size,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) String nationality
+            @RequestParam(required = false) String nationality,
+            @RequestParam(required = false) List<Long> productId
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Recipe> recipes;
-
-        if (StringUtils.hasText(nationality) && StringUtils.hasText(category))
-        {
-            recipes = recipeService.findRecipesByNationalityAndCategory(nationality, category, pageable);
-        }
-        else if (StringUtils.hasText(nationality)) {
-            recipes = recipeService.findRecipesByNationality(nationality, pageable);
-        } else if (StringUtils.hasText(category)) {
-            recipes = recipeService.findRecipesByCategory(category, pageable);
-        } else {
-            recipes = recipeService.findAllRecipes(pageable);
-        }
-
+        Page<Recipe> recipes = recipeService.findRecipesByFilters(nationality, category, productId, pageable);
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/recipes/{id}")
     public ResponseEntity<RecipeWithProductsDTO> getRecipe(@PathVariable Long id) {
