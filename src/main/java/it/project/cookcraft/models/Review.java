@@ -12,4 +12,7 @@ public class Review {
     private double rating;
     private String review;
     private Long userId;
+    private Long recipeId;
+    private String userName;
+    private String userSurname;
 }

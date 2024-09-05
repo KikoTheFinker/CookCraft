@@ -27,7 +27,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
             application.setId(rs.getLong("id"));
             application.setCv(rs.getBytes("cv"));
             application.setMotivationalLetter(rs.getString("motivational_letter"));
-            application.setUserId(rs.getLong("user_id")); // Map the user_id
+            application.setUserId(rs.getLong("user_id"));
 
             return application;
         }

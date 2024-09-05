@@ -28,7 +28,7 @@ public class FavoriteController {
         Long recipeId = Long.valueOf(request.get("recipeId"));
         Optional<User> user = userService.findUserByEmail(userEmail);
 
-        if(!user.isPresent())
+        if(user.isEmpty())
         {
             return new ResponseEntity<>("Error processing user email.", HttpStatus.NOT_FOUND);
         }

@@ -3,7 +3,9 @@ package it.project.cookcraft.controllers;
 import it.project.cookcraft.dto.ProductDTO;
 import it.project.cookcraft.dto.RecipeWithProductsDTO;
 import it.project.cookcraft.models.Recipe;
+import it.project.cookcraft.models.Review;
 import it.project.cookcraft.services.interfaces.RecipeService;
+import it.project.cookcraft.services.interfaces.ReviewService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +20,11 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class RecipeController {
     private final RecipeService recipeService;
+    private final ReviewService reviewService;
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService, ReviewService reviewService) {
         this.recipeService = recipeService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/recipes")
@@ -45,9 +49,11 @@ public class RecipeController {
         Optional<Recipe> recipe = recipeService.findRecipeById(id);
         if(recipe.isPresent())
         {
+            List<Review> reviews = reviewService.getReviewsByRecipeId(id);
             List<ProductDTO> productList = recipeService.findProductsByRecipeId(id);
             recipeWithProductsDTO.setRecipe(recipe.get());
             recipeWithProductsDTO.setProductsInRecipes(productList);
+            recipeWithProductsDTO.setReviews(reviews);
             return new ResponseEntity<>(recipeWithProductsDTO, HttpStatus.OK);
         }
         else

@@ -36,10 +36,17 @@ public class UserProfileController {
 
     @PostMapping("/profile/update")
     public ResponseEntity<Map<String, String>> updateUserProfile(
-            @RequestHeader("Authorization") String token,
             @RequestBody UserDTO userDTO) {
         userService.updateUser(userDTO);
         Map<String, String> response = Map.of("message", "Profile updated successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
+        return userService.findUserById(userId)
+                .map(user -> new ResponseEntity<>(new UserDTO(user.getName(), user.getSurname(), user.getEmail(),
+                        user.getAddress(), user.getPhoneNumber()), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
