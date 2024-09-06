@@ -32,6 +32,10 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewDAO.findByRecipeId(recipeId);
     }
 
+    public List<Review> getReviewsByUserId(Long userId) {
+        return reviewDAO.findByUserId(userId);
+    }
+
     @Override
     public void addReview(Review review) {
         reviewDAO.save(review);

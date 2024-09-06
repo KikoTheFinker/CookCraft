@@ -15,4 +15,6 @@ public class Review {
     private Long recipeId;
     private String userName;
     private String userSurname;
+    private String mealThumb;
+    private String recipeName;
 }

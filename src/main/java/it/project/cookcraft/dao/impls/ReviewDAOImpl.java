@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-
 @Repository
 public class ReviewDAOImpl implements ReviewDAO {
 
@@ -31,29 +30,49 @@ public class ReviewDAOImpl implements ReviewDAO {
             review.setRecipeId(rs.getLong("recipe_id"));
             review.setUserName(rs.getString("user_name"));
             review.setUserSurname(rs.getString("user_surname"));
+            review.setMealThumb(rs.getString("meal_thumb"));
+            review.setRecipeName(rs.getString("recipe_name"));
             return review;
         }
     }
 
     @Override
     public List<Review> findAll() {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname " +
-                "FROM review r JOIN users u ON r.user_id = u.id";
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb,  re.recipe_name " +
+                "FROM review r " +
+                "JOIN users u ON r.user_id = u.id " +
+                "JOIN recipe re ON r.recipe_id = re.id";
         return jdbcTemplate.query(sql, new ReviewMapper());
     }
 
     @Override
     public Optional<Review> findById(Long id) {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname " +
-                "FROM review r JOIN users u ON r.user_id = u.id WHERE r.id = ?";
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb, re.recipe_name " +
+                "FROM review r " +
+                "JOIN users u ON r.user_id = u.id " +
+                "JOIN recipe re ON r.recipe_id = re.id " +
+                "WHERE r.id = ?";
         return jdbcTemplate.query(sql, new Object[]{id}, new ReviewMapper())
                 .stream().findFirst();
     }
 
     @Override
+    public List<Review> findByUserId(Long userId) {
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb, re.recipe_name " +
+                "FROM review r " +
+                "JOIN users u ON r.user_id = u.id " +
+                "JOIN recipe re ON r.recipe_id = re.id " +
+                "WHERE r.user_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{userId}, new ReviewMapper());
+    }
+
+    @Override
     public List<Review> findByRecipeId(Long recipeId) {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname " +
-                "FROM review r JOIN users u ON r.user_id = u.id WHERE r.recipe_id = ?";
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb,  re.recipe_name " +
+                "FROM review r " +
+                "JOIN users u ON r.user_id = u.id " +
+                "JOIN recipe re ON r.recipe_id = re.id " +
+                "WHERE r.recipe_id = ?";
         return jdbcTemplate.query(sql, new Object[]{recipeId}, new ReviewMapper());
     }
 

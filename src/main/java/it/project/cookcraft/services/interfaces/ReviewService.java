@@ -9,6 +9,7 @@ public interface ReviewService {
     List<Review> getAllReviews();
     Optional<Review> getReviewById(Long id);
     List<Review> getReviewsByRecipeId(Long recipeId);
+    List<Review> getReviewsByUserId(Long userId);
     void addReview(Review review);
     void updateReview(Review review);
     void deleteReview(Long id);

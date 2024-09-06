@@ -8,6 +8,7 @@ public interface ReviewDAO {
     List<Review> findAll();
     Optional<Review> findById(Long id);
     List<Review> findByRecipeId(Long recipeId);
+    List<Review> findByUserId(Long userId);
     void save(Review review);
     void update(Review review);
     void delete(Long id);
