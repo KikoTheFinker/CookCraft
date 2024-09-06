@@ -184,4 +184,12 @@ public class RecipeDAOImpl implements RecipeDAO {
         return new PageImpl<>(recipes, pageable, totalRows != null ? totalRows : 0);
     }
 
+    @Override
+    public List<Recipe> getUserFavoriteRecipesById(Long userId) {
+        return jdbcTemplate.query("SELECT r.id, r.recipe_name, r.description, r.category, r.origin, r.meal_thumb, r.video_url\n" +
+                "FROM recipe r\n" +
+                "JOIN user_favorite_recipes u ON u.recipe_id = r.id\n" +
+                "WHERE u.user_id = ?",new Object[]{userId}, new RecipeRowMapper());
+    }
+
 }

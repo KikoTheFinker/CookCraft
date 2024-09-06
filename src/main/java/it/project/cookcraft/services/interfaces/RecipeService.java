@@ -16,4 +16,5 @@ public interface RecipeService {
     void deleteRecipe(Recipe recipe);
     List<ProductDTO> findProductsByRecipeId(Long id);
     Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, String searchTerm, Pageable pageable);
+    List<Recipe> getUserFavoriteRecipesById(Long userId);
 }

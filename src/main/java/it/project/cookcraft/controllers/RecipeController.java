@@ -41,8 +41,6 @@ public class RecipeController {
         return new ResponseEntity<>(recipes, HttpStatus.OK);
     }
 
-
-
     @GetMapping("/recipes/{id}")
     public ResponseEntity<RecipeWithProductsDTO> getRecipe(@PathVariable Long id) {
         RecipeWithProductsDTO recipeWithProductsDTO = new RecipeWithProductsDTO();

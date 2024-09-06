@@ -2,6 +2,7 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.UserDAO;
 import it.project.cookcraft.dto.UserDTO;
+import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.models.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,6 @@ public class UserDAOimpl implements UserDAO {
                 user.getPhoneNumber(), user.getPassword(), user.getUserType().name());
     }
 
-
     @Override
     public void update(UserDTO user) {
         jdbcTemplate.update("UPDATE users SET user_name = ?, user_surname = ?, email = ?, address = ?, phone_number = ? " +
@@ -83,5 +83,16 @@ public class UserDAOimpl implements UserDAO {
     public void addRecipeToFavoritesById(Long id, Long recipeId) {
         jdbcTemplate.update("INSERT INTO user_favorite_recipes(user_id, recipe_id)" +
                 "VALUES (?, ?)", id, recipeId);
+    }
+
+    @Override
+    public boolean alreadyFavorited(Long id, Long recipeId) {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user_favorite_recipes WHERE user_id = ? AND recipe_id = ?", new Object[]{id, recipeId}, Integer.class);
+        return count != null && count > 0;
+    }
+
+    @Override
+    public void removeRecipeFromFavoriteById(Long id, Long recipeId) {
+        jdbcTemplate.update("DELETE FROM user_favorite_recipes WHERE user_id = ? AND recipe_id = ?", id, recipeId);
     }
 }
