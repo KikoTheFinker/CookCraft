@@ -1,6 +1,8 @@
 package it.project.cookcraft.controllers;
 
 import it.project.cookcraft.dto.UserDTO;
+import it.project.cookcraft.models.User;
+import it.project.cookcraft.models.UserType;
 import it.project.cookcraft.security.JwtUtil;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -49,4 +52,20 @@ public class UserProfileController {
                         user.getAddress(), user.getPhoneNumber()), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping("/usertype")
+    public ResponseEntity<?> getUserType(@RequestHeader("Authorization") String auth) {
+        String token = auth.substring(7);
+        String userEmail = jwtUtil.extractEmail(token);
+        Optional<User> user = userService.findUserByEmail(userEmail);
+
+        UserType type = UserType.User;
+        if(user.isPresent())
+        {
+            Long userId = user.get().getId();
+            type = userService.getUserTypeById(userId);
+        }
+        return new ResponseEntity<>(type, HttpStatus.OK);
+    }
+
 }

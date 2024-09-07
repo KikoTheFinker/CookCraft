@@ -4,6 +4,7 @@ import it.project.cookcraft.dao.interfaces.UserDAO;
 import it.project.cookcraft.dto.UserDTO;
 import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.models.User;
+import it.project.cookcraft.models.UserType;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.stereotype.Service;
 
@@ -60,5 +61,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeRecipeFromFavoriteById(Long id, Long recipeId) {
         userDAO.removeRecipeFromFavoriteById(id, recipeId);
+    }
+
+    @Override
+    public UserType getUserTypeById(Long userId) {
+        return userDAO.getUserTypeById(userId);
     }
 }

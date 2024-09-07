@@ -95,4 +95,13 @@ public class UserDAOimpl implements UserDAO {
     public void removeRecipeFromFavoriteById(Long id, Long recipeId) {
         jdbcTemplate.update("DELETE FROM user_favorite_recipes WHERE user_id = ? AND recipe_id = ?", id, recipeId);
     }
+
+    @Override
+    public UserType getUserTypeById(Long userId) {
+        return jdbcTemplate.queryForObject("SELECT user_type FROM users WHERE id = ?", new Object[]{userId}, (rs, rowNum) -> {
+            String userTypeString = rs.getString("user_type");
+            return UserType.valueOf(userTypeString);
+        });
+    }
+
 }
