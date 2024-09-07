@@ -35,24 +35,47 @@ public class ReviewController {
         try {
             String jwtToken = token.substring(7);
             String userEmail = jwtUtil.extractEmail(jwtToken);
-            if (userService.findUserByEmail(userEmail).isPresent()) {
-                Long userId = userService.findUserByEmail(userEmail).get().getId();
-                review.setUserId(userId);
-            }
+            Optional<User> userOptional = userService.findUserByEmail(userEmail);
 
-            Optional<Recipe> recipe = recipeService.findRecipeById(review.getRecipeId());
-            if (recipe.isPresent()) {
-                review.setMealThumb(recipe.get().getMealThumb());
-                reviewService.addReview(review);
-                List<Review> updatedReviews = reviewService.getReviewsByRecipeId(review.getRecipeId());
-                return new ResponseEntity<>(updatedReviews, HttpStatus.CREATED);
+            if (userOptional.isPresent()) {
+                Long userId = userOptional.get().getId();
+                review.setUserId(userId);
+
+                if (reviewService.hasUserReviewedRecipe(userId, review.getRecipeId())) {
+                    return new ResponseEntity<>("You have already reviewed this recipe", HttpStatus.BAD_REQUEST);
+                }
+
+                Optional<Recipe> recipe = recipeService.findRecipeById(review.getRecipeId());
+                if (recipe.isPresent()) {
+                    review.setMealThumb(recipe.get().getMealThumb());
+                    reviewService.addReview(review);
+                    List<Review> updatedReviews = reviewService.getReviewsByRecipeId(review.getRecipeId());
+                    return new ResponseEntity<>(updatedReviews, HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>("Recipe not found", HttpStatus.NOT_FOUND);
+                }
             } else {
-                return new ResponseEntity<>("Recipe not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to add review", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @GetMapping("/reviews/check")
+    public ResponseEntity<?> hasReviewed(@RequestParam String userEmail, @RequestParam Long recipeId) {
+        Optional<User> userOptional = userService.findUserByEmail(userEmail);
+
+        if (userOptional.isPresent()) {
+            Long userId = userOptional.get().getId();
+            boolean hasReviewed = reviewService.hasUserReviewedRecipe(userId, recipeId);
+            return ResponseEntity.ok(hasReviewed);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
     @GetMapping("/reviews/user")
     public ResponseEntity<?> getReviewsByUser(@RequestHeader("Authorization") String token) {
         try {
@@ -72,5 +95,21 @@ public class ReviewController {
             return new ResponseEntity<>("Failed to fetch reviews", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, @RequestHeader("Authorization") String token) {
+        try {
+            String jwtToken = token.substring(7);
+            String userEmail = jwtUtil.extractEmail(jwtToken);
 
+            boolean isDeleted = reviewService.deleteReview(reviewId, userEmail);
+
+            if (isDeleted) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Unauthorized or review not found", HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to delete review", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

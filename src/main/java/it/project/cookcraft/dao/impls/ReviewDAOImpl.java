@@ -32,6 +32,7 @@ public class ReviewDAOImpl implements ReviewDAO {
             review.setUserSurname(rs.getString("user_surname"));
             review.setMealThumb(rs.getString("meal_thumb"));
             review.setRecipeName(rs.getString("recipe_name"));
+            review.setUserEmail(rs.getString("userEmail"));
             return review;
         }
     }
@@ -44,10 +45,9 @@ public class ReviewDAOImpl implements ReviewDAO {
                 "JOIN recipe re ON r.recipe_id = re.id";
         return jdbcTemplate.query(sql, new ReviewMapper());
     }
-
     @Override
     public Optional<Review> findById(Long id) {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb, re.recipe_name " +
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, u.email AS userEmail, re.meal_thumb, re.recipe_name " +
                 "FROM review r " +
                 "JOIN users u ON r.user_id = u.id " +
                 "JOIN recipe re ON r.recipe_id = re.id " +
@@ -58,7 +58,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 
     @Override
     public List<Review> findByUserId(Long userId) {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb, re.recipe_name " +
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, u.email AS userEmail, re.meal_thumb, re.recipe_name " +
                 "FROM review r " +
                 "JOIN users u ON r.user_id = u.id " +
                 "JOIN recipe re ON r.recipe_id = re.id " +
@@ -66,9 +66,10 @@ public class ReviewDAOImpl implements ReviewDAO {
         return jdbcTemplate.query(sql, new Object[]{userId}, new ReviewMapper());
     }
 
+
     @Override
     public List<Review> findByRecipeId(Long recipeId) {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb,  re.recipe_name " +
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, u.email AS userEmail, re.meal_thumb, re.recipe_name " +
                 "FROM review r " +
                 "JOIN users u ON r.user_id = u.id " +
                 "JOIN recipe re ON r.recipe_id = re.id " +
@@ -89,7 +90,17 @@ public class ReviewDAOImpl implements ReviewDAO {
     }
 
     @Override
-    public void delete(Long id) {
-        jdbcTemplate.update("DELETE FROM review WHERE id = ?", id);
+    public boolean delete(Long id, String userEmail) {
+        String sql = "DELETE FROM review WHERE id = ? AND user_id = (SELECT id FROM users WHERE email = ?)";
+        int rowsAffected = jdbcTemplate.update(sql, id, userEmail);
+        return rowsAffected > 0;
+    }
+
+
+    @Override
+    public boolean hasUserReviewedRecipe(Long userId, Long recipeId) {
+        String sql = "SELECT COUNT(*) FROM review WHERE user_id = ? AND recipe_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{userId, recipeId}, Integer.class);
+        return count != null && count > 0;
     }
 }

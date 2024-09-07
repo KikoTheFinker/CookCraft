@@ -47,7 +47,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReview(Long id) {
-        reviewDAO.delete(id);
+    public boolean deleteReview(Long id, String userEmail) {
+        return reviewDAO.delete(id, userEmail);
+    }
+
+    @Override
+    public boolean hasUserReviewedRecipe(Long userId, Long recipeId) {
+        return reviewDAO.hasUserReviewedRecipe(userId, recipeId);
     }
 }

@@ -12,5 +12,6 @@ public interface ReviewService {
     List<Review> getReviewsByUserId(Long userId);
     void addReview(Review review);
     void updateReview(Review review);
-    void deleteReview(Long id);
+    boolean deleteReview(Long id, String userEmail);
+    boolean hasUserReviewedRecipe(Long userId, Long recipeId);
 }

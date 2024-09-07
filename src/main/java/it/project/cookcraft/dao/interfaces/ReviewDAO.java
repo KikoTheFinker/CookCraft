@@ -11,5 +11,6 @@ public interface ReviewDAO {
     List<Review> findByUserId(Long userId);
     void save(Review review);
     void update(Review review);
-    void delete(Long id);
+    boolean delete(Long id, String userEmail);
+    boolean hasUserReviewedRecipe(Long userId, Long recipeId);
 }

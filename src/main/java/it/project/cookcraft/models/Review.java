@@ -17,4 +17,5 @@ public class Review {
     private String userSurname;
     private String mealThumb;
     private String recipeName;
+    private String userEmail;
 }
