@@ -2,6 +2,9 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.ApplicationDAO;
 import it.project.cookcraft.models.Application;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -59,5 +62,16 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     @Override
     public void delete(Application application) {
         jdbcTemplate.update("DELETE FROM application WHERE id = ?", application.getId());
+    }
+
+    @Override
+    public Page<Application> findAllApplications(Pageable pageable) {
+        String sql = "SELECT * FROM application LIMIT ? OFFSET ?";
+
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM application", Integer.class);
+
+        List<Application> applications = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, new ApplicationMapper());
+
+        return new PageImpl<>(applications, pageable, count != null ? count : 0);
     }
 }

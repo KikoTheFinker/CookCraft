@@ -3,6 +3,8 @@ package it.project.cookcraft.services.impl;
 import it.project.cookcraft.dao.interfaces.ReviewDAO;
 import it.project.cookcraft.models.Review;
 import it.project.cookcraft.services.interfaces.ReviewService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,5 +56,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public boolean hasUserReviewedRecipe(Long userId, Long recipeId) {
         return reviewDAO.hasUserReviewedRecipe(userId, recipeId);
+    }
+
+    @Override
+    public Page<Review> findAllReviews(Pageable pageable) {
+        return reviewDAO.findAllReviews(pageable);
     }
 }

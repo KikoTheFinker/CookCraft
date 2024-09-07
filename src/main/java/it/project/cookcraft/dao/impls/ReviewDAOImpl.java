@@ -2,6 +2,9 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.ReviewDAO;
 import it.project.cookcraft.models.Review;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -102,5 +105,16 @@ public class ReviewDAOImpl implements ReviewDAO {
         String sql = "SELECT COUNT(*) FROM review WHERE user_id = ? AND recipe_id = ?";
         Integer count = jdbcTemplate.queryForObject(sql, new Object[]{userId, recipeId}, Integer.class);
         return count != null && count > 0;
+    }
+
+    @Override
+    public Page<Review> findAllReviews(Pageable pageable) {
+        String sql = "SELECT * FROM review LIMIT ? OFFSET ?";
+
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM review", Integer.class);
+
+        List<Review> reviews = jdbcTemplate.query(sql,new Object[]{pageable.getPageSize(), (int)pageable.getOffset()}, new ReviewMapper());
+
+        return new PageImpl<>(reviews, pageable, count != null ? count : 0);
     }
 }
