@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +25,7 @@ public class AdminController {
         this.reviewService = reviewService;
     }
 
-    @PreAuthorize("hasRole('Admin') || hasRole('SuperAdmin')")
-    @GetMapping("/applications")
+    @GetMapping("/admin/applications")
     public ResponseEntity<Page<Application>> getApplications(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size
@@ -37,8 +35,7 @@ public class AdminController {
         return new ResponseEntity<>(applications, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('Admin') || hasRole('SuperAdmin')")
-    @GetMapping("/ratings")
+    @GetMapping("/admin/reviews")
     public ResponseEntity<Page<Review>> getReviews(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size

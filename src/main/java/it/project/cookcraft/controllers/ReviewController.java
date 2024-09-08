@@ -30,6 +30,16 @@ public class ReviewController {
         this.recipeService = recipeService;
     }
 
+    @GetMapping("/reviews")
+    public ResponseEntity<?> getAllReviews() {
+        List<Review> reviews = reviewService.getAllReviews();
+        if(reviews != null)
+        {
+            return new ResponseEntity<>(reviews, HttpStatus.OK);
+        }
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/reviews")
     public ResponseEntity<?> addReview(@RequestBody Review review, @RequestHeader("Authorization") String token) {
         try {
