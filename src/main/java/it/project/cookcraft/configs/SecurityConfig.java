@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Publicly accessible endpoints
                         .requestMatchers("/api/login", "/api/register", "/api/recipes/**", "/api/favorite", "/api/favorite/**",
-                                "/api/products", "/api/users/**", "/api/reviews", "/api/usertype").permitAll()
+                                "/api/products", "/api/users/**", "/api/reviews", "/api/usertype", "/api/admin/**").permitAll()
                         .requestMatchers("/api/deliver/**").hasRole("DELIVERYPERSON")
                         .anyRequest().authenticated()
                 )

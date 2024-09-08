@@ -42,7 +42,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 
     @Override
     public List<Review> findAll() {
-        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb,  re.recipe_name " +
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, re.meal_thumb,  re.recipe_name, u.email AS userEmail " +
                 "FROM review r " +
                 "JOIN users u ON r.user_id = u.id " +
                 "JOIN recipe re ON r.recipe_id = re.id";
@@ -109,12 +109,18 @@ public class ReviewDAOImpl implements ReviewDAO {
 
     @Override
     public Page<Review> findAllReviews(Pageable pageable) {
-        String sql = "SELECT * FROM review LIMIT ? OFFSET ?";
+        String sql = "SELECT r.id, r.rating, r.review, r.user_id, r.recipe_id, u.user_name, u.user_surname, u.email AS userEmail, re.meal_thumb, re.recipe_name " +
+                "FROM review r " +
+                "JOIN users u ON r.user_id = u.id " +
+                "JOIN recipe re ON r.recipe_id = re.id " +
+                "ORDER BY r.id " +
+                "LIMIT ? OFFSET ?";
 
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM review", Integer.class);
 
-        List<Review> reviews = jdbcTemplate.query(sql,new Object[]{pageable.getPageSize(), (int)pageable.getOffset()}, new ReviewMapper());
+        List<Review> reviews = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, new ReviewMapper());
 
         return new PageImpl<>(reviews, pageable, count != null ? count : 0);
     }
+
 }
