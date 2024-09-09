@@ -16,4 +16,5 @@ public interface ReviewDAO {
     boolean delete(Long id, String userEmail);
     boolean hasUserReviewedRecipe(Long userId, Long recipeId);
     Page<Review> findAllReviews(Pageable pageable);
+    boolean deleteReviewByIdViaAdmin(Long id);
 }

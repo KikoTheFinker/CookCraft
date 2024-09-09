@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 @Repository
@@ -122,5 +123,13 @@ public class ReviewDAOImpl implements ReviewDAO {
 
         return new PageImpl<>(reviews, pageable, count != null ? count : 0);
     }
+
+    @Override
+    public boolean deleteReviewByIdViaAdmin(Long reviewId) {
+        String sql = "DELETE FROM review WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, reviewId);
+        return rowsAffected > 0;
+    }
+
 
 }

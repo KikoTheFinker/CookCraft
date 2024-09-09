@@ -62,4 +62,9 @@ public class ReviewServiceImpl implements ReviewService {
     public Page<Review> findAllReviews(Pageable pageable) {
         return reviewDAO.findAllReviews(pageable);
     }
+
+    @Override
+    public boolean deleteReviewByIdViaAdmin(Long id) {
+        return reviewDAO.deleteReviewByIdViaAdmin(id);
+    }
 }
