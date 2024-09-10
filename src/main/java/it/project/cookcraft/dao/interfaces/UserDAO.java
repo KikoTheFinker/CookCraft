@@ -19,4 +19,5 @@ public interface UserDAO {
     boolean alreadyFavorited(Long id, Long recipeId);
     void removeRecipeFromFavoriteById(Long id, Long recipeId);
     UserType getUserTypeById(Long userId);
+    boolean updateUserToDeliveryById(Long userId);
 }

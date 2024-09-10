@@ -67,4 +67,9 @@ public class UserServiceImpl implements UserService {
     public UserType getUserTypeById(Long userId) {
         return userDAO.getUserTypeById(userId);
     }
+
+    @Override
+    public boolean updateUserToDeliveryById(Long userId) {
+        return userDAO.updateUserToDeliveryById(userId);
+    }
 }

@@ -104,4 +104,10 @@ public class UserDAOimpl implements UserDAO {
         });
     }
 
+    @Override
+    public boolean updateUserToDeliveryById(Long userId) {
+        int affectedRows = jdbcTemplate.update("UPDATE users SET user_type = ?::UserType WHERE id = ?", UserType.DeliveryPerson.name() ,userId);
+        return affectedRows == 1;
+    }
+
 }
