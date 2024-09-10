@@ -1,7 +1,6 @@
 package it.project.cookcraft.dao.interfaces;
 
 import it.project.cookcraft.dto.UserDTO;
-import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.models.UserType;
 
@@ -19,4 +18,6 @@ public interface UserDAO {
     boolean alreadyFavorited(Long id, Long recipeId);
     void removeRecipeFromFavoriteById(Long id, Long recipeId);
     UserType getUserTypeById(Long userId);
+    boolean updateUserToDeliveryById(Long userId);
+    Optional<User> findDeliveryPersonByUserId(Long deliveryPersonId);
 }

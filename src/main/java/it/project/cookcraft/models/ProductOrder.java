@@ -12,9 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductOrder {
     private Long id;
-    private List<Long> productId;
     private Long orderId;
+    private Long productId;
+    private Long quantity;
     private Long deliveryPersonId;
     private LocalDateTime createdDate;
-    private double totalPrice;
 }

@@ -1,6 +1,8 @@
 package it.project.cookcraft.dao.impls;
 
+import it.project.cookcraft.dao.interfaces.DeliveryPersonDAO;
 import it.project.cookcraft.dao.interfaces.ReviewDAO;
+import it.project.cookcraft.models.DeliveryPerson;
 import it.project.cookcraft.models.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 @Repository
@@ -132,4 +133,62 @@ public class ReviewDAOImpl implements ReviewDAO {
     }
 
 
+    @Repository
+    public static class DeliveryPersonDAOImpl implements DeliveryPersonDAO {
+
+        private final JdbcTemplate jdbcTemplate;
+
+        public DeliveryPersonDAOImpl(JdbcTemplate jdbcTemplate) {
+            this.jdbcTemplate = jdbcTemplate;
+        }
+        private static final class DeliveryPersonRowMapper implements RowMapper<DeliveryPerson> {
+            @Override
+            public DeliveryPerson mapRow(ResultSet rs, int rowNum) throws SQLException {
+                DeliveryPerson deliveryPerson = new DeliveryPerson();
+                deliveryPerson.setId(rs.getLong("id"));
+                deliveryPerson.setActive(rs.getBoolean("active"));
+                deliveryPerson.setTotalDistance(rs.getDouble("total_distance"));
+                deliveryPerson.setUserId(rs.getLong("user_id"));
+                deliveryPerson.setProductOrderId(rs.getLong("product_order_id"));
+                return deliveryPerson;
+            }
+        }
+
+        @Override
+        public Optional<DeliveryPerson> findDeliveryPersonByUserId(Long userId) {
+            String sql = "SELECT * FROM delivery_person WHERE user_id = ?";
+            return jdbcTemplate.query(sql, new Object[]{userId}, new DeliveryPersonRowMapper()).stream().findFirst();
+        }
+
+        @Override
+        public void save(DeliveryPerson deliveryPerson) {
+            String sql = "INSERT INTO delivery_person (active, total_distance, user_id, product_order_id) VALUES (?, ?, ?, ?)";
+            jdbcTemplate.update(sql,
+                    deliveryPerson.isActive(),
+                    deliveryPerson.getTotalDistance(),
+                    deliveryPerson.getUserId(),
+                    deliveryPerson.getProductOrderId());
+        }
+
+        @Override
+        public Optional<DeliveryPerson> findById(Long id) {
+            String sql = "SELECT * FROM delivery_person WHERE id = ?";
+            return jdbcTemplate.query(sql, new Object[]{id}, new DeliveryPersonRowMapper()).stream().findFirst();
+        }
+
+        @Override
+        public Optional<DeliveryPerson> findByUserId(Long userId) {
+            return findDeliveryPersonByUserId(userId); // Reuse the method
+        }
+
+        @Override
+        public void update(DeliveryPerson deliveryPerson) {
+            String sql = "UPDATE delivery_person SET active = ?, total_distance = ?, product_order_id = ? WHERE id = ?";
+            jdbcTemplate.update(sql,
+                    deliveryPerson.isActive(),
+                    deliveryPerson.getTotalDistance(),
+                    deliveryPerson.getProductOrderId(),
+                    deliveryPerson.getId());
+        }
+    }
 }

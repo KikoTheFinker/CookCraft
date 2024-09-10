@@ -40,7 +40,7 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public Optional<Product> findById(int id) {
+    public Optional<Product> findById(Long id) {
         return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM product WHERE id = ?", new ProductRowMapper(), id));
     }
 

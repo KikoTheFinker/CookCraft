@@ -3,7 +3,6 @@ package it.project.cookcraft.services.impl;
 import it.project.cookcraft.dao.interfaces.ProductDAO;
 import it.project.cookcraft.models.Product;
 import it.project.cookcraft.services.interfaces.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> findProductById(int id) {
+    public Optional<Product> findProductById(Long id) {
         return productDAO.findById(id);
     }
 

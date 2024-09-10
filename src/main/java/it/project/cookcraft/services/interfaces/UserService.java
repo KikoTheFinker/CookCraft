@@ -19,4 +19,5 @@ public interface UserService {
     boolean alreadyFavorited(Long id, Long recipeId);
     void removeRecipeFromFavoriteById(Long id, Long recipeId);
     UserType getUserTypeById(Long userId);
+    Optional<User> findDeliveryPersonByUserId(Long deliveryPersonId);
 }

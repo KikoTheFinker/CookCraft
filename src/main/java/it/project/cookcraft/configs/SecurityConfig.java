@@ -30,9 +30,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Publicly accessible endpoints
                         .requestMatchers("/api/login", "/api/register", "/api/recipes/**", "/api/favorite", "/api/favorite/**",
-                                "/api/products", "/api/users/**", "/api/reviews", "/api/usertype").permitAll()
+                                "/api/products", "/api/users/**", "/api/reviews", "/api/usertype", "/api/productOrders/**", "/api/orders/**").permitAll()
                         .requestMatchers("/api/deliver/**").hasRole("DELIVERYPERSON")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

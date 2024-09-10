@@ -2,10 +2,8 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.UserDAO;
 import it.project.cookcraft.dto.UserDTO;
-import it.project.cookcraft.models.Recipe;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.models.UserType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -102,6 +100,18 @@ public class UserDAOimpl implements UserDAO {
             String userTypeString = rs.getString("user_type");
             return UserType.valueOf(userTypeString);
         });
+    }
+
+    @Override
+    public Optional<User> findDeliveryPersonByUserId(Long deliveryPersonId) {
+        return jdbcTemplate.query("SELECT * FROM users WHERE id = ? AND user_type = 'DeliveryPerson'",
+                new Object[]{deliveryPersonId}, new UserRowMapper()).stream().findFirst();
+    }
+
+    @Override
+    public boolean updateUserToDeliveryById(Long userId) {
+        int affectedRows = jdbcTemplate.update("UPDATE users SET user_type = ?::UserType WHERE id = ?", UserType.DeliveryPerson.name() ,userId);
+        return affectedRows == 1;
     }
 
 }
