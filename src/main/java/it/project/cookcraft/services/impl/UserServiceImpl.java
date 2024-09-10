@@ -72,4 +72,9 @@ public class UserServiceImpl implements UserService {
     public Optional<User> findDeliveryPersonByUserId(Long deliveryPersonId) {
         return userDAO.findDeliveryPersonByUserId(deliveryPersonId);
     }
+    
+    @Override
+    public boolean updateUserToDeliveryById(Long userId) {
+        return userDAO.updateUserToDeliveryById(userId);
+    }
 }

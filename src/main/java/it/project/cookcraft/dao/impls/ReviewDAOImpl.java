@@ -115,7 +115,7 @@ public class ReviewDAOImpl implements ReviewDAO {
                 "FROM review r " +
                 "JOIN users u ON r.user_id = u.id " +
                 "JOIN recipe re ON r.recipe_id = re.id " +
-                "ORDER BY r.id " +
+                "ORDER BY r.id DESC " +
                 "LIMIT ? OFFSET ?";
 
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM review", Integer.class);

@@ -20,4 +20,5 @@ public interface UserService {
     void removeRecipeFromFavoriteById(Long id, Long recipeId);
     UserType getUserTypeById(Long userId);
     Optional<User> findDeliveryPersonByUserId(Long deliveryPersonId);
+    boolean updateUserToDeliveryById(Long userId);
 }
