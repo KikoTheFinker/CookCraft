@@ -24,9 +24,8 @@ public class ProductOrderDAOImpl implements ProductOrderDAO {
         public ProductOrder mapRow(ResultSet rs, int rowNum) throws SQLException {
             ProductOrder productOrder = new ProductOrder();
             productOrder.setId(rs.getLong("id"));
-            productOrder.setOrderId(rs.getLong("order_id"));
             productOrder.setProductId(rs.getLong("product_id"));
-            productOrder.setDeliveryPersonId(rs.getObject("delivery_person") != null ? rs.getLong("delivery_person") : null);
+            productOrder.setOrderId(rs.getLong("order_id"));
             productOrder.setCreatedDate(rs.getTimestamp("order_date").toLocalDateTime());
             productOrder.setQuantity(rs.getLong("quantity"));
             return productOrder;
@@ -35,11 +34,10 @@ public class ProductOrderDAOImpl implements ProductOrderDAO {
 
     @Override
     public void save(ProductOrder productOrder) {
-        String sql = "INSERT INTO product_order (order_id, product_id, delivery_person, order_date, quantity) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO product_order (order_id, product_id, order_date, quantity) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 productOrder.getOrderId(),
                 productOrder.getProductId(),
-                productOrder.getDeliveryPersonId(),
                 LocalDateTime.now(),
                 productOrder.getQuantity()
         );
@@ -51,20 +49,21 @@ public class ProductOrderDAOImpl implements ProductOrderDAO {
         return jdbcTemplate.query(sql, new Object[]{orderId}, new ProductOrderRowMapper());
     }
 
+    @Deprecated
     @Override
     public List<ProductOrder> findProductOrdersByDeliveryPersonId(Long deliveryPersonId) {
         String sql;
         Object[] params;
+        return null;
+//        if (deliveryPersonId == null) {
+//            sql = "SELECT * FROM product_order WHERE delivery_person IS NULL";
+//            params = new Object[]{};
+//        } else {
+//            sql = "SELECT * FROM product_order WHERE delivery_person = ?";
+//            params = new Object[]{deliveryPersonId};
+//        }
 
-        if (deliveryPersonId == null) {
-            sql = "SELECT * FROM product_order WHERE delivery_person IS NULL";
-            params = new Object[]{};
-        } else {
-            sql = "SELECT * FROM product_order WHERE delivery_person = ?";
-            params = new Object[]{deliveryPersonId};
-        }
-
-        return jdbcTemplate.query(sql, params, new ProductOrderRowMapper());
+//        return jdbcTemplate.query(sql, params, new ProductOrderRowMapper());
     }
 
 

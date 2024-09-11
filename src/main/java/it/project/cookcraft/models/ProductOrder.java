@@ -15,6 +15,5 @@ public class ProductOrder {
     private Long orderId;
     private Long productId;
     private Long quantity;
-    private Long deliveryPersonId;
     private LocalDateTime createdDate;
 }
