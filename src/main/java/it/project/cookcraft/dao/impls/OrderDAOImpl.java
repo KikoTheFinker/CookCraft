@@ -1,7 +1,6 @@
 package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.OrderDAO;
-import it.project.cookcraft.models.Application;
 import it.project.cookcraft.models.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,40 +42,25 @@ public class OrderDAOImpl implements OrderDAO {
         }
     }
 
-    @Override
-    public void save(Order order) {
+    public Long save(Order order) {
         String sql = "INSERT INTO orders (address, userid, isfinished) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, new Object[]{order.getAddress(), order.getUserId(), order.isFinished()}, new OrderRowMapper());
-        /*KeyHolder keyHolder = new GeneratedKeyHolder();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
             ps.setString(1, order.getAddress());
             ps.setLong(2, order.getUserId());
             ps.setBoolean(3, order.isFinished());
             return ps;
         }, keyHolder);
 
-        if (keyHolder.getKey() != null) {
-            order.setId(keyHolder.getKey().longValue());
-        }*/
+        return keyHolder.getKey().longValue();
     }
 
     @Override
     public Optional<Order> findById(Long id) {
         String sql = "SELECT * FROM orders WHERE id = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new OrderRowMapper(), id));
-        /*return jdbcTemplate.query(sql, new Object[]{id}, rs -> {
-            if (rs.next()) {
-                Order order = new Order();
-                order.setId(rs.getLong("id"));
-                order.setAddress(rs.getString("address"));
-                order.setUserId(rs.getLong("userid"));
-                order.setFinished(rs.getBoolean("isfinished"));
-                return Optional.of(order);
-            }
-            return Optional.empty();
-        });*/
     }
 
     @Override
@@ -97,7 +80,9 @@ public class OrderDAOImpl implements OrderDAO {
                 "JOIN \n" +
                 "    users u ON o.userid = u.id\n" +
                 "LEFT JOIN \n" +
-                "    users dp ON o.delivery_person_id = dp.id;\n";
+                "    users dp ON o.delivery_person_id = dp.id\n" +
+                "LIMIT ? OFFSET ?";
+
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM orders", Integer.class);
         List<Order> orders = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, new OrderRowMapper());
         return new PageImpl<>(orders, pageable, count != null ? count : 0);
@@ -123,9 +108,17 @@ public class OrderDAOImpl implements OrderDAO {
                 "    users dp ON o.delivery_person_id = dp.id\n" +
                 "WHERE \n" +
                 "    o.review IS NOT NULL\n" +
-                "    AND o.rating IS NOT NULL;\n";
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM orders", Integer.class);
+                "    AND o.rating IS NOT NULL\n" +
+                "LIMIT ? OFFSET ?";
+
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM orders WHERE review IS NOT NULL AND rating IS NOT NULL", Integer.class);
         List<Order> orders = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, new OrderRowMapper());
         return new PageImpl<>(orders, pageable, count != null ? count : 0);
+    }
+
+    @Override
+    public List<Order> findOrdersByUserIdAndIsFinished(Long userId, boolean isFinished) {
+        String sql = "SELECT * FROM orders WHERE userid = ? AND isfinished = ?";
+        return jdbcTemplate.query(sql, new OrderRowMapper(), userId, isFinished);
     }
 }

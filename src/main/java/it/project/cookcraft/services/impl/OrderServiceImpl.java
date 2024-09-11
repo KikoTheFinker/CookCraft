@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,11 +18,8 @@ public class OrderServiceImpl implements OrderService {
     public OrderServiceImpl(OrderDAO orderDAO) {
         this.orderDAO = orderDAO;
     }
-
-    @Override
-    public Order saveOrder(Order order) {
-        orderDAO.save(order);
-        return order;
+    public Long save(Order order) {
+        return orderDAO.save(order);
     }
 
     @Override
@@ -37,5 +35,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<Order> findAllFinishedOrdersWithReviews(Pageable pageable) {
         return orderDAO.findAllFinishedOrdersWithReviews(pageable);
+    }
+
+    @Override
+    public List<Order> findOrdersByUserIdAndIsFinished(Long id, boolean isFinished) {
+        return orderDAO.findOrdersByUserIdAndIsFinished(id, isFinished);
     }
 }

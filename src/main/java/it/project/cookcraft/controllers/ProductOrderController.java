@@ -19,12 +19,21 @@ public class ProductOrderController {
 
     @PostMapping
     public ResponseEntity<String> saveProductOrders(@RequestBody List<ProductOrder> productOrders) {
-        productOrders.forEach(productOrderService::saveProductOrder);
+        for (ProductOrder productOrder : productOrders) {
+            if (productOrder.getOrderId() == null) {
+                return ResponseEntity.badRequest().body("Order ID cannot be null.");
+            }
+            productOrderService.saveProductOrder(productOrder);
+        }
         return ResponseEntity.ok("Product orders saved successfully");
     }
 
     @GetMapping("/order/{orderId}")
     public ResponseEntity<List<ProductOrder>> findProductOrdersByOrderId(@PathVariable Long orderId) {
-        return ResponseEntity.ok(productOrderService.findProductOrdersByOrderId(orderId));
+        List<ProductOrder> productOrders = productOrderService.findProductOrdersByOrderId(orderId);
+        if (productOrders.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productOrders);
     }
 }
