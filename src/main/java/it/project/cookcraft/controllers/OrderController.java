@@ -47,6 +47,7 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    //TODO fix this bro im confused
     @GetMapping("/{id}")
     public ResponseEntity<Order> findOrderById(@PathVariable Long id) {
         return orderService.findOrderById(id)
@@ -61,12 +62,13 @@ public class OrderController {
                                 return product;
                             })
                             .collect(Collectors.toList());
-                    order.setProducts(products);
+//                    order.setProductOrders(products);
                     return ResponseEntity.ok(order);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    //TODO fix this too pls
     @GetMapping("/active")
     public ResponseEntity<List<Order>> getActiveOrders(@RequestHeader("Authorization") String token) {
         String jwtToken = token.replace("Bearer ", "");
@@ -91,7 +93,7 @@ public class OrderController {
                                     return product;
                                 })
                                 .collect(Collectors.toList());
-                        order.setProducts(products);
+                        //order.setProducts(products);
                         return order;
                     })
                     .collect(Collectors.toList());
@@ -102,6 +104,7 @@ public class OrderController {
         }
     }
 
+    //TODO this too bro the commented part
     @GetMapping("/history")
     public ResponseEntity<List<Order>> getOrderHistory(@RequestHeader("Authorization") String token) {
         String jwtToken = token.replace("Bearer ", "");
@@ -128,7 +131,7 @@ public class OrderController {
                             return product;
                         })
                         .collect(Collectors.toList());
-                order.setProducts(products);
+                //order.setProducts(products);
             }
 
             return ResponseEntity.ok(orderHistory);
@@ -152,7 +155,8 @@ public class OrderController {
 
             List<ProductOrder> productOrders = productOrderService.findProductOrdersByOrderId(orderId);
             for (ProductOrder productOrder : productOrders) {
-                productOrder.setDeliveryPersonId(deliveryPersonId);
+                //TODO need to delete this aswell
+                //productOrder.setDeliveryPersonId(deliveryPersonId);
                 productOrderService.saveProductOrder(productOrder);
 
                 Optional<DeliveryPerson> deliveryPersonRecord = deliveryPersonService.findByUserId(deliveryPersonId);

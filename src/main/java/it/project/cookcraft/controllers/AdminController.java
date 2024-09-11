@@ -1,9 +1,11 @@
 package it.project.cookcraft.controllers;
 
 import it.project.cookcraft.models.Application;
+import it.project.cookcraft.models.Order;
 import it.project.cookcraft.models.Review;
 import it.project.cookcraft.security.JwtUtil;
 import it.project.cookcraft.services.interfaces.ApplicationService;
+import it.project.cookcraft.services.interfaces.OrderService;
 import it.project.cookcraft.services.interfaces.ReviewService;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.data.domain.Page;
@@ -21,13 +23,13 @@ public class AdminController {
     private final ApplicationService applicationService;
     private final ReviewService reviewService;
     private final UserService userService;
-    private final JwtUtil jwtUtil;
+    private final OrderService orderService;
 
-    public AdminController(ApplicationService applicationService, ReviewService reviewService, UserService userService, JwtUtil jwtUtil) {
+    public AdminController(ApplicationService applicationService, ReviewService reviewService, UserService userService, OrderService orderService) {
         this.applicationService = applicationService;
         this.reviewService = reviewService;
         this.userService = userService;
-        this.jwtUtil = jwtUtil;
+        this.orderService = orderService;
     }
 
     @GetMapping("/admin/applications")
@@ -38,6 +40,26 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Application> applications = applicationService.findAllApplications(pageable);
         return new ResponseEntity<>(applications, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/orders")
+    public ResponseEntity<Page<Order>> getOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size
+    ) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Order> orders = orderService.findAllOrders(pageable);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @GetMapping("/admin/orderreviews")
+    public ResponseEntity<Page<Order>> getOrderReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size
+    ) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Order> ordersWithReviews = orderService.findAllFinishedOrdersWithReviews(pageable);
+        return new ResponseEntity<>(ordersWithReviews, HttpStatus.OK);
     }
 
     @GetMapping("/admin/reviews")

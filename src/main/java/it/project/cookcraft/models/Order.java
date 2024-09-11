@@ -12,9 +12,10 @@ import java.util.List;
 public class Order {
     private Long id;
     private String address;
-    private double distance;
-    private double price;
-    private Long userId;
+    private String review;
+    private int rating;
     private boolean isFinished;
-    private List<Product> products;
+    private Long userId;
+    private Long deliveryPersonId;
+    private List<ProductOrder> productOrders;
 }
