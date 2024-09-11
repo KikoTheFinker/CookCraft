@@ -86,7 +86,7 @@ public class OrderController {
                                 .map(productOrder -> {
                                     Product product = productService.findProductById(productOrder.getProductId()).orElse(null);
                                     if (product != null) {
-                                        product.setQuantity(productOrder.getQuantity()); // Set quantity from ProductOrder
+                                        product.setQuantity(productOrder.getQuantity());
                                     }
                                     return product;
                                 })

@@ -178,7 +178,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 
         @Override
         public Optional<DeliveryPerson> findByUserId(Long userId) {
-            return findDeliveryPersonByUserId(userId); // Reuse the method
+            return findDeliveryPersonByUserId(userId);
         }
 
         @Override
