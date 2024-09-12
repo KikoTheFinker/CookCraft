@@ -41,4 +41,19 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findOrdersByUserIdAndIsFinished(Long id, boolean isFinished) {
         return orderDAO.findOrdersByUserIdAndIsFinished(id, isFinished);
     }
+
+    @Override
+    public List<Order> findAllActiveOrders() {
+        return orderDAO.findAllActiveOrders();
+    }
+
+    @Override
+    public List<Order> findFinishedOrdersByDeliveryPersonId(Long deliveryPersonId) {
+        return orderDAO.findFinishedOrdersByDeliveryPersonId(deliveryPersonId);
+    }
+
+    @Override
+    public void update(Order order) {
+        orderDAO.update(order);
+    }
 }

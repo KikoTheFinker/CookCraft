@@ -13,4 +13,7 @@ public interface OrderDAO {
     Page<Order> findAllOrders(Pageable pageable);
     Page<Order> findAllFinishedOrdersWithReviews(Pageable pageable);
     List<Order> findOrdersByUserIdAndIsFinished(Long userId, boolean isFinished);
+    List<Order> findAllActiveOrders();
+    List<Order> findFinishedOrdersByDeliveryPersonId(Long deliveryPersonId);
+    void update(Order order);
 }

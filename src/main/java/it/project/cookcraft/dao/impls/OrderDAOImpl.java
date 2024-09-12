@@ -2,6 +2,7 @@ package it.project.cookcraft.dao.impls;
 
 import it.project.cookcraft.dao.interfaces.OrderDAO;
 import it.project.cookcraft.models.Order;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -121,4 +122,35 @@ public class OrderDAOImpl implements OrderDAO {
         String sql = "SELECT * FROM orders WHERE userid = ? AND isfinished = ?";
         return jdbcTemplate.query(sql, new OrderRowMapper(), userId, isFinished);
     }
+
+    @Override
+    public List<Order> findAllActiveOrders() {
+        return jdbcTemplate.query("SELECT * FROM orders WHERE isfinished = false", new OrderRowMapper());
+    }
+
+    @Override
+    public List<Order> findFinishedOrdersByDeliveryPersonId(Long deliveryPersonId) {
+        return jdbcTemplate.query("SELECT * FROM orders WHERE delivery_person_id = ? AND isfinished = true", new OrderRowMapper(), deliveryPersonId);
+    }
+
+    @Override
+    public void update(Order order) {
+        String sql = "UPDATE orders SET address = ?, userid = ?, isfinished = ?, review = ?, rating = ?, delivery_person_id = ? WHERE id = ?";
+
+        int rowsAffected = jdbcTemplate.update(sql,
+                order.getAddress(),
+                order.getUserId(),
+                order.isFinished(),
+                order.getReview(),
+                order.getRating(),
+                order.getDeliveryPersonId(),
+                order.getId()
+        );
+
+        if (rowsAffected == 0) {
+            throw new EntityNotFoundException("Order not found with id: " + order.getId());
+        }
+    }
+
+
 }
