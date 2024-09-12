@@ -65,59 +65,6 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public Page<Order> findAllOrders(Pageable pageable) {
-        String sql = "SELECT \n" +
-                "    u.user_name AS userName,\n" +
-                "    u.user_surname AS userSurname,\n" +
-                "    u.email,\n" +
-                "    u.phone_number AS phoneNumber,\n" +
-                "    o.address AS orderAddress,\n" +
-                "    dp.user_name AS deliveryPersonName,\n" +
-                "    dp.user_surname AS deliveryPersonSurname,\n" +
-                "    dp.email AS deliveryPersonEmail,\n" +
-                "    dp.phone_number AS deliveryPersonPhoneNumber\n" +
-                "FROM \n" +
-                "    orders o\n" +
-                "JOIN \n" +
-                "    users u ON o.userid = u.id\n" +
-                "LEFT JOIN \n" +
-                "    users dp ON o.delivery_person_id = dp.id\n" +
-                "LIMIT ? OFFSET ?";
-
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM orders", Integer.class);
-        List<Order> orders = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, new OrderRowMapper());
-        return new PageImpl<>(orders, pageable, count != null ? count : 0);
-    }
-
-    @Override
-    public Page<Order> findAllFinishedOrdersWithReviews(Pageable pageable) {
-        String sql = "SELECT \n" +
-                "    u.user_name AS userName,\n" +
-                "    u.user_surname AS userSurname,\n" +
-                "    u.email,\n" +
-                "    u.phone_number AS phoneNumber,\n" +
-                "    o.address AS orderAddress,\n" +
-                "    dp.user_name AS deliveryPersonName,\n" +
-                "    dp.user_surname AS deliveryPersonSurname,\n" +
-                "    dp.email AS deliveryPersonEmail,\n" +
-                "    dp.phone_number AS deliveryPersonPhoneNumber\n" +
-                "FROM \n" +
-                "    orders o\n" +
-                "JOIN \n" +
-                "    users u ON o.userid = u.id\n" +
-                "LEFT JOIN \n" +
-                "    users dp ON o.delivery_person_id = dp.id\n" +
-                "WHERE \n" +
-                "    o.review IS NOT NULL\n" +
-                "    AND o.rating IS NOT NULL\n" +
-                "LIMIT ? OFFSET ?";
-
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM orders WHERE review IS NOT NULL AND rating IS NOT NULL", Integer.class);
-        List<Order> orders = jdbcTemplate.query(sql, new Object[]{pageable.getPageSize(), pageable.getOffset()}, new OrderRowMapper());
-        return new PageImpl<>(orders, pageable, count != null ? count : 0);
-    }
-
-    @Override
     public List<Order> findOrdersByUserIdAndIsFinished(Long userId, boolean isFinished) {
         String sql = "SELECT * FROM orders WHERE userid = ? AND isfinished = ?";
         return jdbcTemplate.query(sql, new OrderRowMapper(), userId, isFinished);
@@ -152,5 +99,37 @@ public class OrderDAOImpl implements OrderDAO {
         }
     }
 
+    @Override
+    public List<Order> findAllReviewedOrders() {
+        String sql = "SELECT * FROM orders WHERE review IS NOT NULL AND rating IS NOT NULL ORDER BY ID DESC";
+        return jdbcTemplate.query(sql, new OrderRowMapper());
+    }
 
+    @Override
+    public List<Order> findAllOrders() {
+        String sql = "SELECT * FROM orders ORDER BY ID DESC";
+        return jdbcTemplate.query(sql, new OrderRowMapper());
+    }
+
+    @Override
+    public Page<Order> findAllReviewedOrders(int totalRows, Pageable pageable) {
+        String sql = "SELECT * FROM orders WHERE review IS NOT NULL AND rating IS NOT NULL ORDER BY ID DESC LIMIT ? OFFSET ?";
+        List<Order> orders = jdbcTemplate.query(sql,
+                (PreparedStatement ps) -> {
+                    ps.setInt(1, pageable.getPageSize());
+                    ps.setInt(2, (int) pageable.getOffset());
+        }, new OrderRowMapper());
+        return new PageImpl<>(orders, pageable, totalRows);
+    }
+
+    @Override
+    public Page<Order> findAllOrders(int totalRows, Pageable pageable) {
+        String sql = "SELECT * FROM orders ORDER BY ID DESC LIMIT ? OFFSET ?";
+        List<Order> orders = jdbcTemplate.query(sql,
+                (PreparedStatement ps) -> {
+                    ps.setInt(1, pageable.getPageSize());
+                    ps.setInt(2, (int) pageable.getOffset());
+                }, new OrderRowMapper());
+        return new PageImpl<>(orders, pageable, totalRows);
+    }
 }

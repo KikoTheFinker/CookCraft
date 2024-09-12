@@ -28,16 +28,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAllOrders(Pageable pageable) {
-        return orderDAO.findAllOrders(pageable);
-    }
-
-    @Override
-    public Page<Order> findAllFinishedOrdersWithReviews(Pageable pageable) {
-        return orderDAO.findAllFinishedOrdersWithReviews(pageable);
-    }
-
-    @Override
     public List<Order> findOrdersByUserIdAndIsFinished(Long id, boolean isFinished) {
         return orderDAO.findOrdersByUserIdAndIsFinished(id, isFinished);
     }
@@ -55,5 +45,25 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void update(Order order) {
         orderDAO.update(order);
+    }
+
+    @Override
+    public List<Order> findAllReviewedOrders() {
+        return orderDAO.findAllReviewedOrders();
+    }
+
+    @Override
+    public List<Order> findAllOrders() {
+        return orderDAO.findAllOrders();
+    }
+
+    @Override
+    public Page<Order> findAllReviewedOrders(int totalRows, Pageable pageable) {
+        return orderDAO.findAllReviewedOrders(totalRows, pageable);
+    }
+
+    @Override
+    public Page<Order> findAllOrders(int totalRows, Pageable pageable) {
+        return orderDAO.findAllOrders(totalRows, pageable);
     }
 }

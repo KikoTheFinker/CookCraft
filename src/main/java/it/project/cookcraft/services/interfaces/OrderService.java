@@ -10,10 +10,12 @@ import java.util.Optional;
 public interface OrderService {
     Long save(Order order);
     Optional<Order> findOrderById(Long id);
-    Page<Order> findAllOrders(Pageable pageable);
-    Page<Order> findAllFinishedOrdersWithReviews(Pageable pageable);
     List<Order> findOrdersByUserIdAndIsFinished(Long id, boolean isFinished);
     List<Order> findAllActiveOrders();
     List<Order> findFinishedOrdersByDeliveryPersonId(Long deliveryPersonId);
     void update(Order order);
+    List<Order> findAllReviewedOrders();
+    List<Order> findAllOrders();
+    Page<Order> findAllReviewedOrders(int totalRows, Pageable pageable);
+    Page<Order> findAllOrders(int totalRows, Pageable pageable);
 }

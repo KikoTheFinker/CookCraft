@@ -1,21 +1,25 @@
 package it.project.cookcraft.controllers;
 
+import it.project.cookcraft.dto.ExtendedOrderDTO;
 import it.project.cookcraft.models.Application;
 import it.project.cookcraft.models.Order;
 import it.project.cookcraft.models.Review;
-import it.project.cookcraft.security.JwtUtil;
+import it.project.cookcraft.models.User;
 import it.project.cookcraft.services.interfaces.ApplicationService;
 import it.project.cookcraft.services.interfaces.OrderService;
 import it.project.cookcraft.services.interfaces.ReviewService;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/api")
@@ -43,23 +47,71 @@ public class AdminController {
     }
 
     @GetMapping("/admin/orders")
-    public ResponseEntity<Page<Order>> getOrders(
+    public ResponseEntity<Page<ExtendedOrderDTO>> getOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size
     ) {
         Pageable pageable = PageRequest.of(page,size);
-        Page<Order> orders = orderService.findAllOrders(pageable);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        List<Order> orderList = orderService.findAllOrders();
+        int totalRows = orderList.size();
+        Page<Order> orderPage = orderService.findAllOrders(totalRows, pageable);
+
+        AtomicBoolean error = new AtomicBoolean(false);
+        List<ExtendedOrderDTO> extendedOrderDTOS = orderPage.stream().map(order -> {
+            Long userId = order.getUserId();
+            Long deliveryPersonId = order.getDeliveryPersonId();
+
+            Optional<User> user = userService.findUserById(userId);
+            Optional<User> deliveryPerson = userService.findDeliveryPersonByUserId(deliveryPersonId);
+
+            if(user.isEmpty())
+            {
+                error.set(true);
+            }
+            return new ExtendedOrderDTO(order, user.orElse(null), deliveryPerson.orElse(null));
+        }).toList();
+
+        if(error.get())
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Page<ExtendedOrderDTO> reviewedOrders = new PageImpl<>(extendedOrderDTOS, pageable, totalRows);
+        return new ResponseEntity<>(reviewedOrders, HttpStatus.OK);
     }
 
     @GetMapping("/admin/orderreviews")
-    public ResponseEntity<Page<Order>> getOrderReviews(
+    public ResponseEntity<Page<ExtendedOrderDTO>> getOrderReviews(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "4") int size
     ) {
         Pageable pageable = PageRequest.of(page,size);
-        Page<Order> ordersWithReviews = orderService.findAllFinishedOrdersWithReviews(pageable);
-        return new ResponseEntity<>(ordersWithReviews, HttpStatus.OK);
+        List<Order> ordersList = orderService.findAllReviewedOrders();
+        int totalRows = ordersList.size();
+        Page<Order> orderPage = orderService.findAllReviewedOrders(totalRows, pageable);
+
+        AtomicBoolean error = new AtomicBoolean(false);
+        List<ExtendedOrderDTO> extendedOrderDTOS = orderPage.stream().map(order -> {
+            Long userId = order.getUserId();
+            Long deliveryPersonId = order.getDeliveryPersonId();
+
+            Optional<User> user = userService.findUserById(userId);
+            Optional<User> deliveryPerson = userService.findDeliveryPersonByUserId(deliveryPersonId);
+
+            if(user.isEmpty() || deliveryPerson.isEmpty())
+            {
+                error.set(true);
+            }
+            return new ExtendedOrderDTO(order, user.orElse(null), deliveryPerson.orElse(null));
+        }).toList();
+
+        if(error.get())
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Page<ExtendedOrderDTO> reviewedOrders = new PageImpl<>(extendedOrderDTOS, pageable, totalRows);
+        return new ResponseEntity<>(reviewedOrders, HttpStatus.OK);
     }
 
     @GetMapping("/admin/reviews")
