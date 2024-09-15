@@ -18,4 +18,6 @@ public interface OrderDAO {
     List<Order> findAllOrders();
     Page<Order> findAllReviewedOrders(int totalRows, Pageable pageable);
     Page<Order> findAllOrders(int totalRows, Pageable pageable);
+    List<Order> findOrdersByDeliveryPersonIdAndIsNotFinished(Long id);
+
 }

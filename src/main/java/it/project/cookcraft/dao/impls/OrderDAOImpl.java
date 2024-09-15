@@ -132,4 +132,10 @@ public class OrderDAOImpl implements OrderDAO {
                 }, new OrderRowMapper());
         return new PageImpl<>(orders, pageable, totalRows);
     }
+
+    @Override
+    public List<Order> findOrdersByDeliveryPersonIdAndIsNotFinished(Long id) {
+        return jdbcTemplate.query("SELECT * FROM orders WHERE delivery_person_id = ? AND isfinished = false", new OrderRowMapper(), id);
+    }
+
 }

@@ -66,4 +66,9 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> findAllOrders(int totalRows, Pageable pageable) {
         return orderDAO.findAllOrders(totalRows, pageable);
     }
+
+    @Override
+    public List<Order> findOrdersByDeliveryPersonIdAndIsNotFinished(Long id) {
+        return orderDAO.findOrdersByDeliveryPersonIdAndIsNotFinished(id);
+    }
 }

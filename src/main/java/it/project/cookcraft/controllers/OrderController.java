@@ -1,9 +1,11 @@
 package it.project.cookcraft.controllers;
 
 import it.project.cookcraft.models.Order;
+import it.project.cookcraft.models.ProductOrder;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.security.JwtUtil;
 import it.project.cookcraft.services.interfaces.OrderService;
+import it.project.cookcraft.services.interfaces.ProductOrderService;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,8 +82,8 @@ public class OrderController {
     public ResponseEntity<List<Order>> getAllActiveOrders(@RequestHeader("Authorization") String token) {
         String jwtToken = token.replace("Bearer ", "");
         String userEmail = jwtUtil.extractEmail(jwtToken);
-
         Optional<User> user = userService.findUserByEmail(userEmail);
+
         if (user.isPresent()) {
             List<Order> activeOrders = orderService.findAllActiveOrders();
             return ResponseEntity.ok(activeOrders);
@@ -126,4 +128,5 @@ public class OrderController {
             return ResponseEntity.status(403).build();
         }
     }
+
 }
