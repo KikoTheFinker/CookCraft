@@ -1,11 +1,9 @@
 package it.project.cookcraft.controllers;
 
 import it.project.cookcraft.models.Order;
-import it.project.cookcraft.models.ProductOrder;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.security.JwtUtil;
 import it.project.cookcraft.services.interfaces.OrderService;
-import it.project.cookcraft.services.interfaces.ProductOrderService;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,20 +49,33 @@ public class OrderController {
     @GetMapping("/status/{id}")
     public ResponseEntity<String> getOrderStatus(@PathVariable Long id) {
         Optional<Order> order = orderService.findOrderById(id);
+
         if (order.isPresent()) {
-            if (order.get().getDeliveryPersonId() == 0) {
+            Order currentOrder = order.get();
+
+            if (currentOrder.isFinished()) {
+                if (currentOrder.getDeliveryPersonId() != 0) {
+                    Optional<User> deliveryPerson = userService.findUserById(currentOrder.getDeliveryPersonId());
+                    if (deliveryPerson.isPresent()) {
+                        return ResponseEntity.ok("The delivery person " + deliveryPerson.get().getName() + " " +
+                                deliveryPerson.get().getSurname() + " completed the delivery. Would you like to leave a review?");
+                    }
+                }
+            }
+            else if (currentOrder.getDeliveryPersonId() == 0) {
                 return ResponseEntity.ok("The delivery person is not yet assigned.");
             } else {
-                Optional<User> deliveryPerson = userService.findUserById(order.get().getDeliveryPersonId());
+                Optional<User> deliveryPerson = userService.findUserById(currentOrder.getDeliveryPersonId());
                 if (deliveryPerson.isPresent()) {
-                    return ResponseEntity.ok("The delivery person "+deliveryPerson.get().getName() + " " +
-                            deliveryPerson.get().getSurname()+" is assigned to your order.");
+                    return ResponseEntity.ok("The delivery person " + deliveryPerson.get().getName() + " " +
+                            deliveryPerson.get().getSurname() + " is assigned to your order.");
                 }
             }
         }
 
         return ResponseEntity.notFound().build();
     }
+
 
     @GetMapping("/active")
     public ResponseEntity<Boolean> hasActiveOrder(@RequestHeader("Authorization") String token) {
@@ -124,6 +135,30 @@ public class OrderController {
                 }
             }
             return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.status(403).build();
+        }
+    }
+    @PutMapping("/finish/{orderId}")
+    public ResponseEntity<String> markOrderAsFinished(@RequestHeader("Authorization") String token, @PathVariable Long orderId) {
+        String jwtToken = token.replace("Bearer ", "");
+        String userEmail = jwtUtil.extractEmail(jwtToken);
+        Optional<User> deliveryPerson = userService.findUserByEmail(userEmail);
+
+        if (deliveryPerson.isPresent()) {
+            Optional<Order> orderOptional = orderService.findOrderById(orderId);
+            if (orderOptional.isPresent()) {
+                Order order = orderOptional.get();
+                if (order.getDeliveryPersonId().equals(deliveryPerson.get().getId())) {
+                    order.setFinished(true);
+                    orderService.update(order);
+                    return ResponseEntity.ok("Order has been marked as finished.");
+                } else {
+                    return ResponseEntity.status(403).body("You are not authorized to finish this order.");
+                }
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } else {
             return ResponseEntity.status(403).build();
         }
