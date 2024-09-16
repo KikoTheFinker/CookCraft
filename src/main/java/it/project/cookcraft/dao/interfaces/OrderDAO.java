@@ -19,5 +19,5 @@ public interface OrderDAO {
     Page<Order> findAllReviewedOrders(int totalRows, Pageable pageable);
     Page<Order> findAllOrders(int totalRows, Pageable pageable);
     List<Order> findOrdersByDeliveryPersonIdAndIsNotFinished(Long id);
-
+    boolean deleteById(Long id);
 }

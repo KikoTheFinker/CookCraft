@@ -71,4 +71,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findOrdersByDeliveryPersonIdAndIsNotFinished(Long id) {
         return orderDAO.findOrdersByDeliveryPersonIdAndIsNotFinished(id);
     }
+
+    @Override
+    public boolean deleteById(Long id) {
+        return orderDAO.deleteById(id);
+    }
 }

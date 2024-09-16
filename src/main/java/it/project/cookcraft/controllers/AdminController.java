@@ -114,6 +114,16 @@ public class AdminController {
         return new ResponseEntity<>(reviewedOrders, HttpStatus.OK);
     }
 
+    @DeleteMapping("/admin/orderreviews/{orderId}")
+    public ResponseEntity<?> removeOrderReview(@PathVariable Long orderId, @RequestHeader("Authorization") String jwtToken) {
+        boolean isDeleted = orderService.deleteById(orderId);
+        if(isDeleted)
+        {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping("/admin/reviews")
     public ResponseEntity<Page<Review>> getReviews(
             @RequestParam(defaultValue = "0") int page,

@@ -138,4 +138,15 @@ public class OrderDAOImpl implements OrderDAO {
         return jdbcTemplate.query("SELECT * FROM orders WHERE delivery_person_id = ? AND isfinished = false", new OrderRowMapper(), id);
     }
 
+    @Override
+    public boolean deleteById(Long id) {
+        int affectedProducts = jdbcTemplate.update("DELETE FROM product_order WHERE order_id = ?", id);
+        if(affectedProducts == 0)
+        {
+            return false;
+        }
+        int affectedRows = jdbcTemplate.update("DELETE FROM orders WHERE id = ?", id);
+        return affectedRows > 0;
+    }
+
 }
