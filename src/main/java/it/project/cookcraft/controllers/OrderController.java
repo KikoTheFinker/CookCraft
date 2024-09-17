@@ -1,5 +1,6 @@
 package it.project.cookcraft.controllers;
 
+import it.project.cookcraft.dto.ReviewRequestDTO;
 import it.project.cookcraft.models.Order;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.security.JwtUtil;
@@ -8,7 +9,9 @@ import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -163,5 +166,69 @@ public class OrderController {
             return ResponseEntity.status(403).build();
         }
     }
+    @PutMapping("/{orderId}/review")
+    public ResponseEntity<Map<String, String>> submitReview(
+            @RequestHeader("Authorization") String token,
+            @PathVariable Long orderId,
+            @RequestBody ReviewRequestDTO reviewRequest) {
+
+        String jwtToken = token.replace("Bearer ", "");
+        String userEmail = jwtUtil.extractEmail(jwtToken);
+        Optional<User> user = userService.findUserByEmail(userEmail);
+
+        if (user.isPresent()) {
+            Optional<Order> orderOptional = orderService.findOrderById(orderId);
+            if (orderOptional.isPresent()) {
+                Order order = orderOptional.get();
+
+                if (order.getUserId().equals(user.get().getId()) && order.isFinished()) {
+                    order.setReview(reviewRequest.getReview());
+                    order.setRating(reviewRequest.getRating());
+                    orderService.update(order);
+
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "Review and rating submitted successfully.");
+                    return ResponseEntity.ok(response);
+                } else {
+                    return ResponseEntity.status(403).body(null);
+                }
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.status(403).build();
+        }
+    }
+    @GetMapping("/finished")
+    public ResponseEntity<List<Map<String, Object>>> getFinishedOrders(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.replace("Bearer ", "");
+        String userEmail = jwtUtil.extractEmail(jwtToken);
+        Optional<User> user = userService.findUserByEmail(userEmail);
+
+        if (user.isPresent()) {
+            List<Order> finishedOrders = orderService.findOrdersByUserIdAndIsFinished(user.get().getId(), true);
+
+            List<Map<String, Object>> orderDetails = finishedOrders.stream().map(order -> {
+                Map<String, Object> orderMap = new HashMap<>();
+                orderMap.put("id", order.getId());
+                orderMap.put("address", order.getAddress());
+                orderMap.put("review", order.getReview());
+                orderMap.put("rating", order.getRating());
+
+                Optional<User> deliveryPerson = userService.findUserById(order.getDeliveryPersonId());
+                if (deliveryPerson.isPresent()) {
+                    orderMap.put("deliveryPersonName", deliveryPerson.get().getName());
+                    orderMap.put("deliveryPersonSurname", deliveryPerson.get().getSurname());
+                }
+
+                return orderMap;
+            }).toList();
+
+            return ResponseEntity.ok(orderDetails);
+        } else {
+            return ResponseEntity.status(403).build();
+        }
+    }
+
 
 }
