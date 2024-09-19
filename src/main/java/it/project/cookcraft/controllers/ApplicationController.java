@@ -8,6 +8,7 @@ import it.project.cookcraft.security.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -26,24 +27,32 @@ public class ApplicationController {
     }
 
     @PostMapping("/apply")
-    public ResponseEntity<String> createApplication(@RequestBody Map<String, Object> applicationData, @RequestHeader("Authorization") String tokenHeader) {
+    public ResponseEntity<?> apply(
+            @RequestParam("cv") MultipartFile cv,
+            @RequestParam("motivational_letter") String motivational_letter,
+            @RequestParam("phone_number") String phoneNumber,
+            @RequestParam("email") String email,
+            @RequestHeader("Authorization") String tokenHeader
+            ) {
         try {
             String token = tokenHeader.substring(7);
             String userEmail = jwtUtil.extractEmail(token);
 
-            User user = userService.findUserByEmail(userEmail)
+            User user = userService.findUserByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
+
             Long userId = user.getId();
 
+
             Application application = new Application();
+            application.setMotivationalLetter(motivational_letter);
             application.setUserId(userId);
-            application.setMotivationalLetter((String) applicationData.get("motivational_letter"));
-            application.setCv(applicationData.get("cv") != null ? ((String) applicationData.get("cv")).getBytes() : null);
+            application.setCv(cv.getBytes());
 
             applicationService.saveApplication(application);
-
             return new ResponseEntity<>("Application created successfully", HttpStatus.CREATED);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return new ResponseEntity<>("Error creating application: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
