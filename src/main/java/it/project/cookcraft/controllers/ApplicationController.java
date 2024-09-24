@@ -38,6 +38,11 @@ public class ApplicationController {
             String token = tokenHeader.substring(7);
             String userEmail = jwtUtil.extractEmail(token);
 
+            if(!userEmail.equals(email))
+            {
+                return new ResponseEntity<>("Wrong email", HttpStatus.BAD_REQUEST);
+            }
+
             User user = userService.findUserByEmail(email)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
