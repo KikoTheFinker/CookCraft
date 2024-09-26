@@ -4,6 +4,7 @@ import it.project.cookcraft.dto.ReviewRequestDTO;
 import it.project.cookcraft.models.Order;
 import it.project.cookcraft.models.User;
 import it.project.cookcraft.security.JwtUtil;
+import it.project.cookcraft.services.EmailService;
 import it.project.cookcraft.services.interfaces.OrderService;
 import it.project.cookcraft.services.interfaces.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,14 @@ public class OrderController {
 
     private final OrderService orderService;
     private final UserService userService;
+    private final EmailService emailService;
     private final JwtUtil jwtUtil;
 
     public OrderController(OrderService orderService,
-                           UserService userService, JwtUtil jwtUtil) {
+                           UserService userService, EmailService emailService, JwtUtil jwtUtil) {
         this.orderService = orderService;
         this.userService = userService;
+        this.emailService = emailService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -132,6 +135,15 @@ public class OrderController {
                 if (order.getDeliveryPersonId() == 0) {
                     order.setDeliveryPersonId(deliveryPerson.get().getId());
                     orderService.update(order);
+                    String sb = deliveryPerson.get().getName() +
+                            " " +
+                            deliveryPerson.get().getSurname();
+                    Optional<User> user = userService.findUserById(order.getUserId());
+                    if(user.isEmpty())
+                    {
+                        return ResponseEntity.badRequest().body("User does not exist");
+                    }
+                    emailService.sendOrderAcceptedEmail(user.get().getEmail(), sb);
                     return ResponseEntity.ok("Order accepted by " + deliveryPerson.get().getName());
                 } else {
                     return ResponseEntity.badRequest().body("Order is already assigned.");
