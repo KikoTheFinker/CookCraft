@@ -1,6 +1,7 @@
 package it.project.cookcraft.dao.interfaces;
 
 import it.project.cookcraft.dto.ProductDTO;
+import it.project.cookcraft.dto.RecipeApplicationDTO;
 import it.project.cookcraft.models.Recipe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,8 @@ public interface RecipeDAO {
     List<ProductDTO> findProductsByRecipeId(Long recipeId);
     Page<Recipe> findRecipesByFilters(String nationality, String category, List<Long> productIds, String searchTerm, Pageable pageable);
     List<Recipe> getUserFavoriteRecipesById(Long userId);
+    void addRecipeApplication(RecipeApplicationDTO recipeApplicationDTO);
+    Page<RecipeApplicationDTO> findAllRecipeApplications(Pageable pageable);
+    Boolean deleteRecipeApplication(Long id);
+    void acceptRecipeApplication(Long id);
 }

@@ -1,14 +1,12 @@
 package it.project.cookcraft.controllers;
 
 import it.project.cookcraft.dto.ExtendedOrderDTO;
+import it.project.cookcraft.dto.RecipeApplicationDTO;
 import it.project.cookcraft.models.Application;
 import it.project.cookcraft.models.Order;
 import it.project.cookcraft.models.Review;
 import it.project.cookcraft.models.User;
-import it.project.cookcraft.services.interfaces.ApplicationService;
-import it.project.cookcraft.services.interfaces.OrderService;
-import it.project.cookcraft.services.interfaces.ReviewService;
-import it.project.cookcraft.services.interfaces.UserService;
+import it.project.cookcraft.services.interfaces.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -28,12 +26,14 @@ public class AdminController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final OrderService orderService;
+    private final RecipeService recipeService;
 
-    public AdminController(ApplicationService applicationService, ReviewService reviewService, UserService userService, OrderService orderService) {
+    public AdminController(ApplicationService applicationService, ReviewService reviewService, UserService userService, OrderService orderService, RecipeService recipeService) {
         this.applicationService = applicationService;
         this.reviewService = reviewService;
         this.userService = userService;
         this.orderService = orderService;
+        this.recipeService = recipeService;
     }
 
     @GetMapping("/admin/applications")
@@ -114,6 +114,16 @@ public class AdminController {
         return new ResponseEntity<>(reviewedOrders, HttpStatus.OK);
     }
 
+    @GetMapping("/admin/recipeapplications")
+    public ResponseEntity<Page<RecipeApplicationDTO>> getRecipeApplication(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<RecipeApplicationDTO> recipeApplications = recipeService.findAllRecipeApplications(pageable);
+        return new ResponseEntity<>(recipeApplications, HttpStatus.OK);
+    }
+
     @DeleteMapping("/admin/orderreviews/{orderId}")
     public ResponseEntity<?> removeOrderReview(@PathVariable Long orderId, @RequestHeader("Authorization") String jwtToken) {
         boolean isDeleted = orderService.deleteById(orderId);
@@ -164,5 +174,21 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping("/admin/recipeapplication/decline/{id}")
+    public ResponseEntity<?> declineRecipeApplication(@PathVariable Long id) {
+        Boolean isRemoved = recipeService.deleteRecipeApplication(id);
+        if(isRemoved)
+        {
+            return new ResponseEntity<>("Successfully declined the selected recipe.", HttpStatus.OK);
+        }
+        else return new ResponseEntity<>("An error occurred while deleting the application.", HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/admin/recipeapplication/accept/{id}")
+    public ResponseEntity<?> acceptRecipeApplication(@PathVariable Long id) {
+        recipeService.acceptRecipeApplication(id);
+        return new ResponseEntity<>("Successfully accepted the selected recipe.", HttpStatus.OK);
     }
 }
