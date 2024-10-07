@@ -2,17 +2,16 @@ package it.project.cookcraft.services;
 
 import it.project.cookcraft.dao.interfaces.UserDAO;
 import it.project.cookcraft.models.User;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.userdetails.User.UserBuilder;
-import static org.springframework.security.core.userdetails.User.withUsername;
 import org.springframework.stereotype.Service;
 
+import static org.springframework.security.core.userdetails.User.withUsername;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
 
     private final UserDAO userDAO;
 

@@ -1,12 +1,11 @@
 package it.project.cookcraft.security;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
@@ -18,13 +17,22 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final Dotenv dotenv = Dotenv.load();
     private SecretKey SECRET_KEY;
 
     @PostConstruct
     public void init() {
-        this.SECRET_KEY = new SecretKeySpec(Base64.getDecoder().decode(secretKey), SignatureAlgorithm.HS256.getJcaName());
+        String secret = dotenv.get("JWT_SECRET");
+        if (secret == null || secret.isEmpty()) {
+            throw new IllegalArgumentException("JWT_SECRET is not set in the .env file");
+        }
+
+        try {
+            byte[] decodedKey = Base64.getDecoder().decode(secret);
+            this.SECRET_KEY = new SecretKeySpec(decodedKey, SignatureAlgorithm.HS256.getJcaName());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid JWT_SECRET format. Ensure it's Base64-encoded.", e);
+        }
     }
 
     public String extractEmail(String token) {
