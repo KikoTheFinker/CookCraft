@@ -8,7 +8,10 @@
 - **Filter Recipes**
 - **Shopping Cart**
 - **User Roles**
+- **Ingredients Delivery
 - **Delivery Details**
+- **Ratings**
+- **Favorites**
 - **Pagination**
 - **Clean UI**
 
