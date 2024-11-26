@@ -1,6 +1,6 @@
 ## CookCraft
 
-**CookCraft** is a web application for exploring, organizing, and managing recipes. It simplifies meal planning by providing features like recipe search with various filters, ingredient shopping, and delivery management, all wrapped in a clean and easy-to-use interface.
+**CookCraft** is a web application for exploring, organizing, and managing recipes. It simplifies meal planning by providing features like recipe search with various filters, ingredient shopping, and delivery management.
 
 ### Features
 
@@ -8,7 +8,7 @@
 - **Filter Recipes**
 - **Shopping Cart**
 - **User Roles**
-- **Ingredients Delivery
+- **Ingredients Delivery**
 - **Delivery Details**
 - **Ratings**
 - **Favorites**
